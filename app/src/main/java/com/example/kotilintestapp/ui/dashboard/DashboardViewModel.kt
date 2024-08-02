@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel
 
 class DashboardViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
-    }
+    private val _text = MutableLiveData<String>().apply { value = "대시보드 페이지" }
     val text: LiveData<String> = _text
 }
