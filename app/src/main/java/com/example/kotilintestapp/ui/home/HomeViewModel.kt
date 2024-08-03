@@ -6,6 +6,6 @@ import androidx.lifecycle.ViewModel
 
 class HomeViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply { value = "메인 페이지" }
+    private val _text = MutableLiveData<String>().apply { value = "메인 페이지 12141" }
     val text: LiveData<String> = _text
 }

@@ -13,25 +13,21 @@ class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)
+        val dashboardViewModel = ViewModelProvider(this)[DashboardViewModel::class.java]
 
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textDashboard
-        dashboardViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        dashboardViewModel.text.observe(viewLifecycleOwner) { textView.text = it }
         return root
     }
 
