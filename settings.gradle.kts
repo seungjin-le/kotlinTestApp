@@ -11,7 +11,9 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
+    val appcompat_version = "1.7.0"
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
@@ -20,4 +22,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "KotilinTestApp"
-include(":app")
+
+include(
+    ":app")
