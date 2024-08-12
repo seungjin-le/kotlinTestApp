@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-
+  implementation(libs.androidx.lifecycle.viewmodel.ktx)
   implementation(libs.volley)
   implementation(libs.retrofit)
   implementation(libs.converter.gson)
