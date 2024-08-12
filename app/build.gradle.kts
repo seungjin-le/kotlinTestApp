@@ -64,6 +64,7 @@ dependencies {
   implementation(libs.androidx.material3)
   implementation(libs.androidx.tracing.perfetto.handshake)
   implementation(libs.androidx.recyclerview)
+  implementation(libs.androidx.navigation.compose)
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)
   androidTestImplementation(libs.androidx.espresso.core)
