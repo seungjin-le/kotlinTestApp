@@ -1,5 +1,7 @@
 package com.example.kotlintestapp.ui.screens
 
+import LoginViewModel
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,10 +10,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuDefaults.outlinedTextFieldColors
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults.outlinedTextFieldColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,8 +34,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(nav: NavController){
+fun LoginScreen(nav: NavController) {
+  val viewModel = LoginViewModel()
+  val loginResult = viewModel.loginResult.collectAsState()
 
   Column(
     modifier = Modifier
@@ -40,9 +49,9 @@ fun LoginScreen(nav: NavController){
     verticalArrangement =    Arrangement.Center
 
   ){
-    var username by remember {mutableStateOf(TextFieldValue())}
+    var email by remember {mutableStateOf(TextFieldValue())}
     var password by remember{mutableStateOf(TextFieldValue())}
-var isError by remember { mutableStateOf(false) }
+    var isError by remember { mutableStateOf(false) }
     Text(text = "BUBAUM", textAlign = TextAlign.Center,
       style = TextStyle(
         color = Color.Blue,
@@ -69,16 +78,23 @@ var isError by remember { mutableStateOf(false) }
     verticalArrangement = Arrangement.Center
   ){
     OutlinedTextField(
-      colors = outlinedTextFieldColors(
-        focusedBorderColor = Color.Blue,
-        unfocusedBorderColor = Color.Blue,
+      colors =
+      outlinedTextFieldColors(
+        focusedBorderColor =  if (isError) Color.Red else Color.Blue,
+        unfocusedBorderColor = if (isError) Color.Red else Color.Blue,
         errorBorderColor = Color.Red,
       ),
       shape = RoundedCornerShape(5.dp),
       modifier = Modifier.fillMaxWidth(),
-      value = username, onValueChange = { username = it}, label = { Text("UserName") })
+      value = email, onValueChange = { email = it}, label = { Text("UserName") })
     Spacer(modifier = Modifier.height(10.dp))
     OutlinedTextField(
+      colors =
+      outlinedTextFieldColors(
+        focusedBorderColor = Color.Blue,
+        unfocusedBorderColor = Color.Blue,
+        errorBorderColor = Color.Red,
+      ),
       shape = RoundedCornerShape(5.dp),
       modifier = Modifier.fillMaxWidth(),
       value = password, onValueChange = { password = it}, label = { Text("Password") },  visualTransformation = PasswordVisualTransformation())
@@ -88,8 +104,9 @@ var isError by remember { mutableStateOf(false) }
       modifier = Modifier.fillMaxWidth(),
       shape = RoundedCornerShape(5.dp),
       onClick = {
-      if(username.text == "admin" && password.text == "admin") nav.navigate("home")
-      else  isError = true
+        val user = viewModel.login(email.text, password.text)
+        Log.d("TESTTEST","sfasfas${user.toString()}")
+//      isError = !isError
     }) {
       Text(
         modifier = Modifier
@@ -101,8 +118,22 @@ var isError by remember { mutableStateOf(false) }
     }
   }
 
+  //로그인 결과 처리
+  LaunchedEffect(loginResult) {
+    Log.d("TESTTEST", "로그인 결과: ${loginResult.value}")
+    when (loginResult.value) {
+      is Result ->
+        // 로그인 성공 시 데이터 확인
 
+        Log.d("TESTTEST", "로그인 성공: ${loginResult.value}")
+    else ->
+        // 로그인 실패 시 오류 처리
+        Log.e("TESTTEST", "로그인 실패: ${loginResult.value}")
 
+    }
+  }
 }
+
+
 
 

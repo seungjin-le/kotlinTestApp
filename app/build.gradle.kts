@@ -48,6 +48,8 @@ android {
 }
 
 dependencies {
+  implementation(libs.androidx.runtime.livedata)
+  implementation(libs.lifecycle.viewmodel.ktx.v240)
   implementation(libs.androidx.lifecycle.viewmodel.ktx)
   implementation(libs.volley)
   implementation(libs.retrofit)
