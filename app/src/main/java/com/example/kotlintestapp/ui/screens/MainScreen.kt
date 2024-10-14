@@ -1,11 +1,13 @@
 package com.example.kotlintestapp.ui.screens
 
 import ItemModel
+import RowCenter
 
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,6 +17,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 
@@ -27,12 +30,21 @@ fun HomeScreen(nav: NavController ){
   Scaffold (
     topBar = { },
     bottomBar = {
-      Row {
+      Row (
+        modifier = Modifier
+          .padding(10.dp)
+          .fillMaxWidth(),
+        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
+
+      ){
+        Button(onClick = { nav.navigate("Setting") }) {
+          Text(text = "Setting")
+        }
         Button(onClick = { nav.navigate("Setting") }) {
           Text(text = "Setting")
         }
         Button(onClick = { nav.navigate("Login") }) {
-          Text(text = "About")
+          Text(text = "Login")
         }
       }
     }
@@ -43,7 +55,11 @@ fun HomeScreen(nav: NavController ){
     ) {
       Text(text = "Home Screen")
       datas.forEach {
-        Text(text = it.toString())
+        RowCenter {
+          Text(text = it.toString())
+          Text(text = it.toString())
+          Text(text = it.toString())
+        }
       }
     }
   }

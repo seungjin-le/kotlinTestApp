@@ -39,7 +39,6 @@ import androidx.navigation.NavController
 @Composable
 fun LoginScreen(nav: NavController) {
   val viewModel = LoginViewModel()
-  val loginResult = viewModel.loginResult.collectAsState()
 
   Column(
     modifier = Modifier
@@ -104,9 +103,14 @@ fun LoginScreen(nav: NavController) {
       modifier = Modifier.fillMaxWidth(),
       shape = RoundedCornerShape(5.dp),
       onClick = {
+
         val user = viewModel.login(email.text, password.text)
-        Log.d("TESTTEST","sfasfas${user.toString()}")
-//      isError = !isError
+        Log.d("TESTTEST","$user $email.test $password.text")
+        when(user){
+          is Result -> nav.navigate("Home")
+          else -> isError = true
+        }
+
     }) {
       Text(
         modifier = Modifier
@@ -118,20 +122,6 @@ fun LoginScreen(nav: NavController) {
     }
   }
 
-  //로그인 결과 처리
-  LaunchedEffect(loginResult) {
-    Log.d("TESTTEST", "로그인 결과: ${loginResult.value}")
-    when (loginResult.value) {
-      is Result ->
-        // 로그인 성공 시 데이터 확인
-
-        Log.d("TESTTEST", "로그인 성공: ${loginResult.value}")
-    else ->
-        // 로그인 실패 시 오류 처리
-        Log.e("TESTTEST", "로그인 실패: ${loginResult.value}")
-
-    }
-  }
 }
 
 

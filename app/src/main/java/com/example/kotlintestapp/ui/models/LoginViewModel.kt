@@ -44,10 +44,12 @@ class LoginViewModel : ViewModel() {
   private val _loginResult = MutableStateFlow<Result<LoginResponse>>(runCatching { LoginResponse("", "", LoginData("", "")) })
   val loginResult: StateFlow<Result<LoginResponse>> = _loginResult.asStateFlow()
 
-  fun login(username: String, password: String) {
+  fun login(username: String, password: String) : Result<LoginResponse> {
     viewModelScope.launch {
       try {
         retrofit.postLogin(LoginRequest(username, password)).enqueue(object : Callback<LoginResponse> {
+
+          // API 호출 성공 처리
           override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
             if (response.isSuccessful) {
               _loginResult.value = Result.success(response.body()!!)
@@ -55,13 +57,17 @@ class LoginViewModel : ViewModel() {
               _loginResult.value = Result.failure(Exception("Login failed: ${response.code()}"))
             }
           }
+          // API 호출 실패 처리
           override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
             _loginResult.value = Result.failure(t)
           }
         })
+        // API 호출 에러
       } catch (e: Exception) {
+        Log.d("TESTTEST","err")
         _loginResult.value = Result.failure(e)
       }
     }
+    return _loginResult.value
   }
 }
