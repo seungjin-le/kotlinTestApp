@@ -9,7 +9,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import com.example.kotlintestapp.ui.screens.HomeScreen
+import com.example.kotlintestapp.ui.layouts.AppBar
+import com.example.kotlintestapp.ui.screens.homeScreen
 import com.example.kotlintestapp.ui.theme.AndroidTheme
 
 
@@ -21,8 +22,10 @@ class MainActivity : ComponentActivity() {
     setContent {
       AndroidTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-
-          HomeScreen()
+          AppBar(
+            selectedItems = setOf(),
+          )
+          homeScreen()
 
         }
       }

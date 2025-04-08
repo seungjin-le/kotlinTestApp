@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 @Composable
 fun MainAppBar() {
   TopAppBar(
-    title = { Text("My App") },
+    title = { Text("My Test App") },
     navigationIcon = {
       IconButton(onClick = { /* Handle navigation icon click */ }) {
         Icon(Icons.Filled.Menu, contentDescription = "Menu")
