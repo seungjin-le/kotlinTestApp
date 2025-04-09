@@ -45,16 +45,12 @@ android {
       excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
   }
-  sourceSets {
-    getByName("main") {
-      assets {
-        srcDirs("src/main/assets")
-      }
-    }
-  }
+
 }
 
 dependencies {
+
+
 
   implementation(libs.volley)
   implementation(libs.retrofit)
@@ -71,6 +67,7 @@ dependencies {
   implementation(libs.androidx.material3)
   implementation(libs.androidx.tracing.perfetto.handshake)
   implementation(libs.androidx.recyclerview)
+  implementation(libs.androidx.navigation.compose)
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)
   androidTestImplementation(libs.androidx.espresso.core)
