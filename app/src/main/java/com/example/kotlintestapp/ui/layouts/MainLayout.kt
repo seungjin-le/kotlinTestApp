@@ -9,15 +9,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.kotlintestapp.R
-import com.example.kotlintestapp.ui.theme.N20
-import com.example.kotlintestapp.ui.theme.N80
-import com.example.kotlintestapp.ui.theme.N90
-import com.example.kotlintestapp.ui.theme.TextSizes
+import com.example.kotlintestapp.ui.theme.*
 
 @Composable
 fun mainLayout(content: @Composable () -> Unit) {
@@ -50,11 +46,11 @@ fun mainLayout(content: @Composable () -> Unit) {
       ) {
 
         Column {
-          Text(text = "매장에 방문해 주셔서", style = TextSizes.h2, color = Color.White)
-          Text(text = "감사합니다.", style = TextSizes.h2, color = Color.White)
+          Text(text = "매장에 방문해 주셔서", style = TextSizes.h2, color = White)
+          Text(text = "감사합니다.", style = TextSizes.h2, color = White)
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Text(text = "잠시만 대기해 주시면 감사하겠습니다.", style = TextSizes.m2, color = Color.White)
+        Text(text = "잠시만 대기해 주시면 감사하겠습니다.", style = TextSizes.m2, color = White)
       }
 
 
@@ -62,14 +58,13 @@ fun mainLayout(content: @Composable () -> Unit) {
 
       Row(
         modifier = Modifier.fillMaxWidth().height(130.dp).clip(shape = RoundedCornerShape(20.dp)).background(
-
-          color = Color.White,
+          color = White,
         ).padding(vertical = 28.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Bottom
       ) {
         Column(
-          modifier = Modifier.weight(1f),
+          modifier = Modifier.fillMaxHeight().weight(1f),
           verticalArrangement = Arrangement.Center,
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -78,7 +73,7 @@ fun mainLayout(content: @Composable () -> Unit) {
         }
         Spacer(modifier = Modifier.height(74.dp).width(1.dp).background(color = N20))
         Column(
-          modifier = Modifier.weight(1f),
+          modifier = Modifier.fillMaxHeight().weight(1f),
           verticalArrangement = Arrangement.Center,
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
