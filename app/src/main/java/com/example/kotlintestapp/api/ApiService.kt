@@ -9,7 +9,7 @@ interface ApiService {
   fun getUser(@Path("userId") userId: String): Call<ApiResponse>
 
 
-  @POST("/api/v1/members/login")
+  @POST("api/v1/members/login")
   fun login(@Body loginRequest: LoginRequest): Call<ApiResponse>
 
   // PUT 요청 예시

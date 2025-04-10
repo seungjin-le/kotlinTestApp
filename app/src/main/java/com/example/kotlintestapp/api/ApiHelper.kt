@@ -13,8 +13,11 @@ object ApiHelper {
     return try {
       val response = call.execute()
       if (response.isSuccessful) {
+        println("response = ${response.body()} ${response.code()} ${response.message()}")
         Result.success(response.body()!!)
+
       } else {
+        println("response = ${response.body()} ${response.code()} ${response.message()}")
         Result.failure(Exception("API 오류: ${response.code()} ${response.message()}"))
       }
     } catch (e: Exception) {
@@ -26,6 +29,7 @@ object ApiHelper {
   fun <T> enqueueCall(call: Call<T>, onSuccess: (T) -> Unit, onError: (String) -> Unit) {
     call.enqueue(object : Callback<T> {
       override fun onResponse(call: Call<T>, response: Response<T>) {
+        println("response = ${response.body()} ${response.code()} ${response.message()}")
         if (response.isSuccessful) {
           response.body()?.let {
             onSuccess(it)
@@ -44,7 +48,9 @@ object ApiHelper {
   // 코루틴을 사용한 API 호출
   suspend fun <T> api(call: Call<T>): T = suspendCoroutine { continuation ->
     call.enqueue(object : Callback<T> {
+
       override fun onResponse(call: Call<T>, response: Response<T>) {
+        println("response = ${response.body()} ${response.code()} ${response.message()}")
         if (response.isSuccessful) {
           response.body()?.let {
             continuation.resume(it)
@@ -55,6 +61,7 @@ object ApiHelper {
       }
 
       override fun onFailure(call: Call<T>, t: Throwable) {
+        println("response = ${t}")
         continuation.resumeWithException(t)
       }
     })

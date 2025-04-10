@@ -40,18 +40,16 @@ fun loginScreen(home: () -> Unit) {
     )
     println("result = ===== $form")
 
-    val result = ApiHelper.executeCall(RetrofitClient.apiService.login(form))
+    val result = ApiHelper.enqueueCall(
+      RetrofitClient.apiService.login(form),
+      onSuccess = {
+        println("result success ====== $it")
+      },
+      onError = {
+        println("result error ====== $it")
+      })
 
-    println("result = ===== $result")
-    if (result.isSuccess) {
-      val data = result.getOrNull()
 
-      println(data)
-
-    } else {
-      val error = result.exceptionOrNull()
-      return
-    }
   }
 
 
