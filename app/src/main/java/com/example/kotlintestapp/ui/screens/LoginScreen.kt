@@ -14,6 +14,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.kotlintestapp.R
+import com.example.kotlintestapp.api.ApiHelper
+import com.example.kotlintestapp.api.LoginRequest
+import com.example.kotlintestapp.api.RetrofitClient
 import com.example.kotlintestapp.ui.components.inputs.checkBox
 import com.example.kotlintestapp.ui.components.inputs.textInput
 import com.example.kotlintestapp.ui.theme.N50
@@ -28,6 +31,24 @@ fun loginScreen(home: () -> Unit) {
   var password by remember { mutableStateOf("") }
   var saveId by remember { mutableStateOf(false) }
 
+  fun handleOnClickLogin() {
+    val form = LoginRequest(
+      username = email,
+      password = password
+    )
+
+
+    val result = ApiHelper.executeCall(RetrofitClient.apiService.login(form))
+    if (result.isSuccess) {
+      val data = result.getOrNull()
+
+      println(data)
+
+    } else {
+      val error = result.exceptionOrNull()
+      return
+    }
+  }
 
 
   Column(
