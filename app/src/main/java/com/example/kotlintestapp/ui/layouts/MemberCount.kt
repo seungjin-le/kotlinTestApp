@@ -57,7 +57,8 @@ fun memberCount(normalCount: Int, infantCount: Int, onChange: (Int, String) -> U
             onClick = { onChange(value, "n") },
             enabled = normalCount != value,
             shape = RoundedCornerShape(8.dp),
-            modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(color = White).width(68.dp).height(68.dp),
+            modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(color = White).width(68.dp)
+              .height(68.dp),
             border = BorderStroke(1.dp, if (normalCount == value) S400 else N30)
           ) {
             Text(text = "${value}", style = n2, color = if (normalCount == value) S400 else N70)
@@ -93,16 +94,16 @@ fun memberCount(normalCount: Int, infantCount: Int, onChange: (Int, String) -> U
       Spacer(modifier = Modifier.height(20.dp))
       LazyRow {
         items(20) { index ->
-          var value = index + 1
-
+          val value = index + 1
           TextButton(
             onClick = { onChange(value, "i") },
             enabled = infantCount != value,
             shape = RoundedCornerShape(8.dp),
-            modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(color = White).width(68.dp).height(68.dp),
+            modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(color = White).width(68.dp)
+              .height(68.dp),
             border = BorderStroke(1.dp, if (infantCount == value) S400 else N30)
           ) {
-            Text(text = "${value}", style = n2, color = if (infantCount == value) S400 else N70)
+            Text(text = "$value", style = n2, color = if (infantCount == value) S400 else N70)
 
 
           }

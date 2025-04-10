@@ -1,4 +1,3 @@
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -17,7 +16,7 @@ public fun ColumnCenter(
 
   Column(
     modifier = Modifier.padding(10.dp)
-  ){
+  ) {
     Text(
       text = item.title ?: "No Title",
       fontSize = 20.sp,
@@ -30,12 +29,12 @@ public fun ColumnCenter(
     Text(
       text = item.description ?: "No Description",
 
-    )
+      )
   }
 }
 
 class ItemModel {
-  var id: Long= 0
+  var id: Long = 0
   var title: String? = ""
   var description: String? = ""
   var author: String? = ""

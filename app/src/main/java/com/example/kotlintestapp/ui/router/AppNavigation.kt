@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.kotlintestapp.ui.screens.homeScreen
+import com.example.kotlintestapp.ui.screens.loginScreen
 import com.example.kotlintestapp.ui.screens.reservationScreen
 import com.example.kotlintestapp.ui.screens.waitingScreen
 
@@ -14,7 +15,7 @@ fun appRouter() {
 
   NavHost(
     navController = navController,
-    startDestination = "waiting"
+    startDestination = "login"
   ) {
     composable("home") {
       homeScreen(
@@ -34,8 +35,11 @@ fun appRouter() {
         onClickHome = { navController.navigate("home") }
       )
     }
-
-
+    composable("login") {
+      loginScreen(
+        home = { navController.navigate("home") }
+      )
+    }
   }
 }
 

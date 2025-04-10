@@ -69,7 +69,12 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
 
           items(20) { index ->
             if (index == 0) Spacer(modifier = Modifier.width(24.dp))
-            TextButton(onClick = { /*TODO*/ }) {
+            TextButton(
+              onClick = { /*TODO*/ },
+              modifier = Modifier.defaultMinSize(minWidth = 150.dp).height(44.dp)
+                .border(width = 1.dp, N20, RoundedCornerShape(8.dp)),
+              shape = RoundedCornerShape(8.dp)
+            ) {
               Text(text = "카테고리 $index", style = n2, color = N90)
             }
             Spacer(modifier = Modifier.width(if (index == 19) 24.dp else 8.dp))
@@ -99,7 +104,8 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
 
                 ) {
                   Column(
-                    modifier = Modifier.fillMaxSize().weight(1f).clip(shape = RoundedCornerShape(8.dp))
+                    modifier = Modifier.fillMaxSize().weight(1f)
+                      .clip(shape = RoundedCornerShape(8.dp))
                       .background(color = N20),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
