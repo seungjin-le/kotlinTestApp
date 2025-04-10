@@ -27,18 +27,22 @@ import com.example.kotlintestapp.ui.theme.White
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun loginScreen(home: () -> Unit) {
-  var email by remember { mutableStateOf("") }
-  var password by remember { mutableStateOf("") }
+  var email by remember { mutableStateOf("baskin1") }
+  var password by remember { mutableStateOf("1234qwer!") }
   var saveId by remember { mutableStateOf(false) }
 
   fun handleOnClickLogin() {
+    println("result = ===== ")
     val form = LoginRequest(
       username = email,
-      password = password
+      password = password,
+      role = "STORE"
     )
-
+    println("result = ===== $form")
 
     val result = ApiHelper.executeCall(RetrofitClient.apiService.login(form))
+
+    println("result = ===== $result")
     if (result.isSuccess) {
       val data = result.getOrNull()
 
@@ -84,7 +88,7 @@ fun loginScreen(home: () -> Unit) {
       }
       Spacer(modifier = Modifier.height(24.dp))
       TextButton(
-        onClick = { home() },
+        onClick = { handleOnClickLogin() },
         modifier = Modifier.clip(RoundedCornerShape(8.dp)).fillMaxWidth().height(44.dp).background(Orange),
       ) {
         Text("로그인", style = s2, color = White)

@@ -49,9 +49,6 @@ android {
 }
 
 dependencies {
-
-
-
   implementation(libs.volley)
   implementation(libs.retrofit)
   implementation(libs.converter.gson)
@@ -78,4 +75,6 @@ dependencies {
   implementation(libs.material)
   implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
   implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
+  implementation("androidx.core:core-splashscreen:1.0.1")
+
 }

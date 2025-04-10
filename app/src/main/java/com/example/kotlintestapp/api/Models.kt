@@ -10,5 +10,6 @@ data class ApiResponse(
 
 data class LoginRequest(
   val username: String,
-  val password: String
+  val password: String,
+  val role: String
 )
