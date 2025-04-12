@@ -1,11 +1,13 @@
 package com.example.kotlintestapp.api
 
+
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+
 
 object ApiHelper {
   // 동기적 API 호출
@@ -29,7 +31,8 @@ object ApiHelper {
   fun <T> enqueueCall(call: Call<T>, onSuccess: (T) -> Unit, onError: (String) -> Unit) {
     call.enqueue(object : Callback<T> {
       override fun onResponse(call: Call<T>, response: Response<T>) {
-        println("response = ${response.body()} ${response.code()} ${response.message()}")
+
+
         if (response.isSuccessful) {
           response.body()?.let {
             onSuccess(it)

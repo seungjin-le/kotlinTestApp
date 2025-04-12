@@ -45,7 +45,6 @@ android {
       excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
   }
-
 }
 
 dependencies {
@@ -76,5 +75,7 @@ dependencies {
   implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
   implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
   implementation("androidx.core:core-splashscreen:1.0.1")
+  implementation("androidx.datastore:datastore-preferences-core:1.1.4")
+  implementation("androidx.datastore:datastore-preferences-rxjava3:1.1.4")
 
 }

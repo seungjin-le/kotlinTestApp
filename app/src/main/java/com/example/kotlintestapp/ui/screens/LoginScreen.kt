@@ -40,10 +40,10 @@ fun loginScreen(home: () -> Unit) {
     )
     println("result = ===== $form")
 
-    val result = ApiHelper.enqueueCall(
+    ApiHelper.enqueueCall(
       RetrofitClient.apiService.login(form),
       onSuccess = {
-        println("result success ====== $it")
+        println("result success ====== ${it.resultData?.accessToken}")
       },
       onError = {
         println("result error ====== $it")
