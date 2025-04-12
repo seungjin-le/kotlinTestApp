@@ -1,5 +1,6 @@
 package com.example.kotlintestapp.ui.screens
 
+import LoginViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,10 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kotlintestapp.R
-import com.example.kotlintestapp.api.ApiHelper
 import com.example.kotlintestapp.api.LoginRequest
-import com.example.kotlintestapp.api.RetrofitClient
 import com.example.kotlintestapp.ui.components.inputs.checkBox
 import com.example.kotlintestapp.ui.components.inputs.textInput
 import com.example.kotlintestapp.ui.theme.N50
@@ -24,31 +24,27 @@ import com.example.kotlintestapp.ui.theme.Orange
 import com.example.kotlintestapp.ui.theme.TextSizes.s2
 import com.example.kotlintestapp.ui.theme.White
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun loginScreen(home: () -> Unit) {
+fun loginScreen(
+  home: () -> Unit, loginViewModel: LoginViewModel = viewModel()
+) {
+
   var email by remember { mutableStateOf("baskin1") }
   var password by remember { mutableStateOf("1234qwer!") }
   var saveId by remember { mutableStateOf(false) }
 
   fun handleOnClickLogin() {
-    println("result = ===== ")
+
     val form = LoginRequest(
       username = email,
       password = password,
       role = "STORE"
     )
-    println("result = ===== $form")
 
-    ApiHelper.enqueueCall(
-      RetrofitClient.apiService.login(form),
-      onSuccess = {
-        println("result success ====== ${it.resultData?.accessToken}")
-      },
-      onError = {
-        println("result error ====== $it")
-      })
 
+    loginViewModel.login(form)
 
   }
 

@@ -10,12 +10,12 @@ import com.example.kotlintestapp.ui.screens.reservationScreen
 import com.example.kotlintestapp.ui.screens.waitingScreen
 
 @Composable
-fun appRouter() {
+fun appRouter(useJwt: Boolean?) {
   val navController = rememberNavController()
 
   NavHost(
     navController = navController,
-    startDestination = "login"
+    startDestination = if (useJwt == true) "home" else "login"
   ) {
     composable("home") {
       homeScreen(
