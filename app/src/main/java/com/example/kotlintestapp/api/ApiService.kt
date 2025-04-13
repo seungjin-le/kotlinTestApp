@@ -1,16 +1,34 @@
 package com.example.kotlintestapp.api
 
+import com.example.kotlintestapp.models.ChildCategory
+import com.example.kotlintestapp.models.FirstCategory
+import com.example.kotlintestapp.models.StoreSetting
 import retrofit2.Call
 import retrofit2.http.*
 
 interface ApiService {
-  // GET 요청 예시
-  @GET("users/{userId}")
-  fun getUser(@Path("userId") userId: String): Call<ApiResponse<Any>>
+  // 웨이팅 설정
+  @GET("api/v1/waiting?store_id=67bfcb551c2bf321c1a107df")
+  fun getWaiting(): Call<ApiResponse<StoreSetting>>
+//@Path("userId") userId: String
 
 
+  // 로그인
   @POST("api/v1/members/login")
   fun login(@Body loginRequest: LoginRequest): Call<ApiResponse<LoginResponse>>
+
+  // 1차 카테고리
+  @GET("api/v1/category/parent?store_id=67bfcb551c2bf321c1a107df")
+  fun getFirstCategory(): Call<ApiResponse<List<FirstCategory>>>
+
+  // 2차 카테고리
+  @GET("api/v1/category/child?store_id=67bfcb551c2bf321c1a107df")
+  fun getChildCategory(): Call<ApiResponse<List<ChildCategory>>>
+
+  // 2차 카테고리
+  @GET("api/v1/menu?store_id=67bfcb551c2bf321c1a107df")
+  fun getMenuList(): Call<ApiResponse<List<ChildCategory>>>
+
 
   // PUT 요청 예시
   @PUT("users/{userId}")

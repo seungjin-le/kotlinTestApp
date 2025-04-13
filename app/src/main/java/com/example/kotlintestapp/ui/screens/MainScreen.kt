@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -14,11 +15,32 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.kotlintestapp.R
+import com.example.kotlintestapp.api.ApiHelper
+import com.example.kotlintestapp.api.RetrofitClient
 import com.example.kotlintestapp.ui.layouts.mainLayout
 import com.example.kotlintestapp.ui.theme.*
 
 @Composable
 fun homeScreen(onClickWaiting: () -> Unit, onClickReservation: () -> Unit) {
+
+
+  LaunchedEffect(Unit) {
+
+    ApiHelper.enqueueCall(
+      RetrofitClient.apiService.getWaiting(),
+      onSuccess = {
+
+        val accessToken = it.resultData
+        println("result success ====== ${accessToken}")
+
+      },
+      onError = {
+        println("result error ====== $it")
+
+      })
+
+  }
+
 
   mainLayout() {
     Column(
