@@ -18,14 +18,17 @@ interface ApiService {
   fun login(@Body loginRequest: LoginRequest): Call<ApiResponse<LoginResponse>>
 
   // 1차 카테고리
-  @GET("api/v1/category/parent?store_id=67bfcb551c2bf321c1a107df")
-  fun getFirstCategory(): Call<ApiResponse<List<FirstCategory>>>
+  @GET("api/v1/category/parent")
+  fun getFirstCategory(@Query("store_id") parentCategoryId: String = "67bfcb551c2bf321c1a107df"): Call<ApiResponse<List<FirstCategory>>>
 
   // 2차 카테고리
-  @GET("api/v1/category/child?store_id=67bfcb551c2bf321c1a107df")
-  fun getChildCategory(): Call<ApiResponse<List<ChildCategory>>>
+  @GET("api/v1/category/child")
+  fun getChildCategory(
+    @Query("store_id") storeId: String? = null,
+    @Query("parent_category_id") parentCategoryId: String? = null
+  ): Call<ApiResponse<List<ChildCategory>>>
 
-  // 2차 카테고리
+  // 메뉴 리스트
   @GET("api/v1/menu?store_id=67bfcb551c2bf321c1a107df")
   fun getMenuList(): Call<ApiResponse<List<ChildCategory>>>
 
