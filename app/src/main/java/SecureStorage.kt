@@ -1,89 +1,142 @@
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log // Log 사용 예시
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.example.kotlintestapp.models.StoreSetting
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import java.io.IOException
 import java.security.GeneralSecurityException
 
 object SecureStorageHelper {
 
-  private const val PREFS_FILE_NAME = "secure_app_prefs" // 암호화된 SharedPreferences 파일 이름
+  private const val TAG = "Storage" // 로그 태그
+  private const val PREFS_FILE_NAME = "secure_app_prefs"
 
-  // EncryptedSharedPreferences 인스턴스를 생성하고 반환하는 함수
-  private fun createEncryptedSharedPreferences(context: Context): SharedPreferences? {
-    try {
-      // 1. MasterKey 생성: 암호화 키를 안전하게 관리
-      val masterKey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM) // 키 암호화 방식 설정
-        .build()
+  // SharedPreferences 인스턴스를 저장할 변수 (lazy 초기화 사용)
+  // 앱 실행 중 처음 접근될 때 한 번만 초기화됨
+  private var encryptedPrefs: SharedPreferences? = null
 
-      // 2. EncryptedSharedPreferences 인스턴스 생성
-      return EncryptedSharedPreferences.create(
-        context,
-        PREFS_FILE_NAME, // 저장될 파일 이름
-        masterKey, // 마스터 키
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, // 키를 암호화하는 방식
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM  // 값을 암호화하는 방식
-      )
-    } catch (e: GeneralSecurityException) {
-      // 보안 관련 예외 처리 (키 생성 실패 등)
-      println("Error creating EncryptedSharedPreferences: ${e.message}")
-      // e.printStackTrace() // 디버깅 시 스택 트레이스 출력
-      return null
-    } catch (e: IOException) {
-      // IO 관련 예외 처리 (파일 생성 실패 등)
-      println("Error creating EncryptedSharedPreferences: ${e.message}")
-      // e.printStackTrace() // 디버깅 시 스택 트레이스 출력
-      return null
+  // MasterKey 인스턴스도 미리 생성하거나 lazy 초기화 가능
+  private var masterKey: MasterKey? = null
+
+  private val gson = Gson()
+
+  // 앱 시작 시 Application 클래스 등에서 한 번 호출
+  fun init(context: Context) {
+    if (encryptedPrefs == null) { // 이미 초기화되었다면 다시 하지 않음
+      try {
+        val appContext = context.applicationContext // applicationContext 사용
+
+        // 1. MasterKey 생성
+        masterKey = MasterKey.Builder(appContext, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+          .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+          .build()
+
+        // 2. EncryptedSharedPreferences 인스턴스 생성 및 저장
+        encryptedPrefs = EncryptedSharedPreferences.create(
+          appContext,
+          PREFS_FILE_NAME,
+          masterKey!!, // masterKey가 null이 아님을 보장 (실제로는 null 체크 필요)
+          EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+          EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+      } catch (e: GeneralSecurityException) {
+        Log.e(TAG, "Error initializing EncryptedSharedPreferences", e)
+        // 초기화 실패 시 encryptedPrefs는 null로 유지됨
+      } catch (e: IOException) {
+        Log.e(TAG, "Error initializing EncryptedSharedPreferences", e)
+        // 초기화 실패 시 encryptedPrefs는 null로 유지됨
+      }
     }
   }
 
+  // SharedPreferences 인스턴스를 안전하게 가져오는 private 함수
+  private fun getPrefs(): SharedPreferences? {
+    if (encryptedPrefs == null) {
+      Log.w(TAG, "SecureStorageHelper is not initialized or initialization failed.")
+    }
+    return encryptedPrefs
+  }
+
   // --- 데이터 저장 함수 ---
+  // 이제 context 파라미터가 필요 없음 (init에서 설정된 인스턴스 사용)
 
-  fun saveString(context: Context, key: String, value: String) {
-    
-    val prefs = createEncryptedSharedPreferences(context)
-    prefs?.edit()?.putString(key, value)?.apply()
+  fun saveString(key: String, value: String) {
+    getPrefs()?.edit()?.putString(key, value)?.apply()
   }
 
-  fun saveInt(context: Context, key: String, value: Int) {
-    val prefs = createEncryptedSharedPreferences(context)
-    prefs?.edit()?.putInt(key, value)?.apply()
+  fun saveInt(key: String, value: Int) {
+    getPrefs()?.edit()?.putInt(key, value)?.apply()
   }
 
-  fun saveBoolean(context: Context, key: String, value: Boolean) {
-    val prefs = createEncryptedSharedPreferences(context)
-    prefs?.edit()?.putBoolean(key, value)?.apply()
+  fun saveBoolean(key: String, value: Boolean) {
+    getPrefs()?.edit()?.putBoolean(key, value)?.apply()
   }
+
+  // --- 객체 저장 함수 ---
+  fun <T> saveObject(key: String, value: T?) {
+    if (value == null) {
+      // null 객체는 저장하지 않거나, 키를 삭제할 수 있습니다.
+      remove(key) // 예: null이면 기존 값 삭제
+      return
+    }
+    try {
+      val jsonString = gson.toJson(value) // 객체를 JSON 문자열로 변환
+      saveString(key, jsonString) // 내부의 saveString 활용
+    } catch (e: Exception) {
+      Log.e(TAG, "Error saving object to JSON for key: $key", e)
+    }
+  }
+
 
   // --- 데이터 읽기 함수 ---
 
-  fun getString(context: Context, key: String, defaultValue: String? = null): String? {
-    val prefs = createEncryptedSharedPreferences(context)
-    return prefs?.getString(key, defaultValue)
+  fun getString(key: String, defaultValue: String? = null): String? {
+    return getPrefs()?.getString(key, defaultValue)
   }
 
-  fun getInt(context: Context, key: String, defaultValue: Int = 0): Int {
-    val prefs = createEncryptedSharedPreferences(context)
-    // SharedPreferences.getInt는 null을 반환하지 않으므로 defaultValue 보장됨
-    return prefs?.getInt(key, defaultValue) ?: defaultValue
+  fun getInt(key: String, defaultValue: Int = 0): Int {
+    // null일 경우 defaultValue 반환 보장
+    return getPrefs()?.getInt(key, defaultValue) ?: defaultValue
   }
 
-  fun getBoolean(context: Context, key: String, defaultValue: Boolean = false): Boolean {
-    val prefs = createEncryptedSharedPreferences(context)
-    // SharedPreferences.getBoolean은 null을 반환하지 않으므로 defaultValue 보장됨
-    return prefs?.getBoolean(key, defaultValue) ?: defaultValue
+  fun getBoolean(key: String, defaultValue: Boolean = false): Boolean {
+    // null일 경우 defaultValue 반환 보장
+    return getPrefs()?.getBoolean(key, defaultValue) ?: defaultValue
   }
+
+  // --- 객체 읽기 함수 ---
+  fun <T> getObject(key: String, classOfT: Class<T>): T? {
+    val jsonString = getString(key, null) // 내부의 getString 활용
+    if (jsonString != null) {
+      try {
+        return gson.fromJson(jsonString, classOfT) // JSON 문자열을 객체로 변환
+      } catch (e: JsonSyntaxException) {
+        // JSON 파싱 오류 처리
+        Log.e(TAG, "Error parsing JSON for key: $key", e)
+      } catch (e: Exception) {
+        // 기타 오류 처리
+        Log.e(TAG, "Error getting object for key: $key", e)
+      }
+    }
+    return null // 키가 없거나 오류 발생 시 null 반환
+  }
+
+
+  fun getSettings(): StoreSetting? {
+    return getObject("setting", StoreSetting::class.java)
+  }
+
 
   // --- 특정 키 데이터 삭제 ---
-  fun remove(context: Context, key: String) {
-    val prefs = createEncryptedSharedPreferences(context)
-    prefs?.edit()?.remove(key)?.apply()
+  fun remove(key: String) {
+    getPrefs()?.edit()?.remove(key)?.apply()
   }
 
   // --- 모든 데이터 삭제 ---
-  fun clearAll(context: Context) {
-    val prefs = createEncryptedSharedPreferences(context)
-    prefs?.edit()?.clear()?.apply()
+  fun clearAll() {
+    getPrefs()?.edit()?.clear()?.apply()
   }
 }

@@ -9,18 +9,18 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kotlintestapp.api.ApiHelper
@@ -44,7 +44,6 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
 
 
   fun getMenuList(child: ChildCategory) {
-
     if (child == null) return
     selectedChild = child
   }
@@ -99,12 +98,16 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
 
 
   Column(
-    modifier = Modifier.fillMaxSize().padding(top = 36.dp),
+    modifier = Modifier
+      .fillMaxSize()
+      .padding(top = 36.dp),
     verticalArrangement = Arrangement.SpaceBetween
   ) {
 
     Column(
-      modifier = Modifier.fillMaxWidth().weight(1f),
+      modifier = Modifier
+        .fillMaxWidth()
+        .weight(1f),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -112,7 +115,21 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
       Spacer(modifier = Modifier.height(20.dp))
 
       LazyRow(
-        modifier = Modifier.fillMaxWidth().height(40.dp),
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(40.dp)
+          .drawBehind { // Composable 컨텐츠 영역 뒤에 직접 그리기 시작
+            val strokeWidth = 1.dp.toPx() // 테두리 두께를 Pixel 값으로 변환
+            val y = size.height - strokeWidth / 2 // 선을 그릴 Y 좌표 계산 (컴포저블 높이의 맨 아래쪽)
+
+            // 아래쪽에 선 그리기
+            drawLine(
+              color = N20, // 선 색상
+              start = Offset(0f, y), // 시작점 (왼쪽 아래)
+              end = Offset(size.width, y), // 끝점 (오른쪽 아래)
+              strokeWidth = strokeWidth // 선 두께
+            )
+          },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
       ) {
@@ -128,7 +145,9 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
             ) {
               Spacer(modifier = Modifier.width(if (index == 0) 24.dp else 0.dp))
               Row(
-                modifier = Modifier.height(24.dp).padding(0.dp),
+                modifier = Modifier
+                  .height(24.dp)
+                  .padding(0.dp),
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.Center
 
@@ -136,18 +155,27 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
               ) {
                 TextButton(
                   onClick = { getChild(firstCategoryList!![index]) },
-                  modifier = Modifier.fillMaxHeight().wrapContentWidth(),
-                  contentPadding = PaddingValues(0.dp)
+                  modifier = Modifier
+                    .fillMaxHeight()
+                    .wrapContentWidth()
+                    .clip(RoundedCornerShape(0.dp)),
+                  contentPadding = PaddingValues(0.dp),
+                  shape = RoundedCornerShape(0.dp),
                 ) {
                   Text(
-                    text = "${firstCategoryList!![index].categoryName} ",
+                    modifier = Modifier
+                      .weight(1f),
+                    textAlign = TextAlign.Start,
+                    text = firstCategoryList!![index].categoryName,
                     style = n2,
                     color = N90,
-
-                    )
+                  )
                 }
                 Box(
-                  modifier = Modifier.width(5.dp).height(5.dp).clip(CircleShape)
+                  modifier = Modifier
+                    .width(5.dp)
+                    .height(5.dp)
+                    .clip(CircleShape)
                     .background(if (firstCategoryList!![index].parentCategoryId == selectedFirst?.parentCategoryId == true) Orange else White)
                 )
 
@@ -161,7 +189,9 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
       if (!childCategoryList.isNullOrEmpty()) {
         Spacer(modifier = Modifier.height(20.dp))
         LazyRow(
-          modifier = Modifier.fillMaxWidth().height(44.dp),
+          modifier = Modifier
+            .fillMaxWidth()
+            .height(44.dp),
           horizontalArrangement = Arrangement.Start,
           verticalAlignment = Alignment.CenterVertically
         ) {
@@ -171,14 +201,19 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
               Spacer(modifier = Modifier.width(if (index == 0) 24.dp else 0.dp))
               TextButton(
                 onClick = { getMenuList(childCategoryList!![index]) },
-                modifier = Modifier.defaultMinSize(minWidth = 150.dp).height(44.dp).border(
-                  width = 1.dp,
-                  if (childCategoryList!![index].childCategoryId == selectedChild!!.childCategoryId) Orange else N20,
-                  RoundedCornerShape(8.dp)
-                ).clip(RoundedCornerShape(8.dp)).background(
-                  if (childCategoryList!![index].childCategoryId == selectedChild!!.childCategoryId) Orange else
-                    White
-                ),
+                modifier = Modifier
+                  .defaultMinSize(minWidth = 150.dp)
+                  .height(44.dp)
+                  .border(
+                    width = 1.dp,
+                    if (childCategoryList!![index].childCategoryId == selectedChild!!.childCategoryId) Orange else N20,
+                    RoundedCornerShape(8.dp)
+                  )
+                  .clip(RoundedCornerShape(8.dp))
+                  .background(
+                    if (childCategoryList!![index].childCategoryId == selectedChild!!.childCategoryId) Orange else
+                      White
+                  ),
                 shape = RoundedCornerShape(8.dp),
                 contentPadding = PaddingValues(0.dp)
               ) {
@@ -198,31 +233,26 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
       }
 
 
-      Surface(
-        shape = RectangleShape,
-        color = Orange,
-        shadowElevation = 16.dp,
+
+      Column(
         modifier = Modifier
           .fillMaxSize()
-
-          .drawWithContent {
-            val paddingPx = 51.dp.toPx()
-            clipRect(top = paddingPx, bottom = -paddingPx) { this@drawWithContent.drawContent() }
-          }
-      ) {
-
-      }
-      Column(
-        modifier = Modifier.fillMaxSize().background(color = Gray).weight(1f),
+          .background(color = Gray)
+          .weight(1f),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
       ) {
 
         Column(
-          modifier = Modifier.fillMaxSize().weight(1f).padding(horizontal = 20.dp),
+          modifier = Modifier
+            .fillMaxSize()
+            .weight(1f)
+            .padding(horizontal = 20.dp),
         ) {
           LazyVerticalGrid(
-            modifier = Modifier.fillMaxSize().weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             columns = GridCells.Adaptive(minSize = 110.dp),
@@ -237,7 +267,10 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
               Column {
                 TextButton(
                   shape = RectangleShape,
-                  modifier = Modifier.height(158.dp).fillMaxWidth().clip(RoundedCornerShape(0.dp)),
+                  modifier = Modifier
+                    .height(158.dp)
+                    .width(110.dp)
+                    .clip(RoundedCornerShape(0.dp)),
                   contentPadding = PaddingValues(0.dp),
                   onClick = { /*TODO*/ }) {
                   Column(
@@ -247,7 +280,10 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
 
                   ) {
                     Column(
-                      modifier = Modifier.fillMaxSize().weight(1f).clip(shape = RoundedCornerShape(8.dp))
+                      modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f)
+                        .clip(shape = RoundedCornerShape(8.dp))
                         .background(color = N20),
                       verticalArrangement = Arrangement.Center,
                       horizontalAlignment = Alignment.CenterHorizontally
@@ -287,7 +323,9 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
 
 
     Row(
-      modifier = Modifier.fillMaxWidth().height(178.dp)
+      modifier = Modifier
+        .fillMaxWidth()
+        .height(178.dp)
         .padding(vertical = 20.dp)
     ) {
 
@@ -296,12 +334,17 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
 
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(200.dp).fillMaxHeight().border(
-          width = 1.dp,
-          color = N20,
-          shape = RoundedCornerShape(8.dp)
+        modifier = Modifier
+          .width(200.dp)
+          .fillMaxHeight()
+          .border(
+            width = 1.dp,
+            color = N20,
+            shape = RoundedCornerShape(8.dp)
 
-        ).padding(horizontal = 18.dp).clip(RoundedCornerShape(8.dp))
+          )
+          .padding(horizontal = 18.dp)
+          .clip(RoundedCornerShape(8.dp))
       ) {
         Row(
           verticalAlignment = Alignment.CenterVertically,
@@ -336,12 +379,17 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
         Row(
           verticalAlignment = Alignment.CenterVertically,
           horizontalArrangement = Arrangement.SpaceBetween,
-          modifier = Modifier.height(34.dp).fillMaxWidth()
+          modifier = Modifier
+            .height(34.dp)
+            .fillMaxWidth()
         ) {
           TextButton(
             onClick = { prev() },
             shape = RoundedCornerShape(8.dp),
-            modifier = Modifier.clip(RoundedCornerShape(8.dp)).fillMaxHeight().weight(1f),
+            modifier = Modifier
+              .clip(RoundedCornerShape(8.dp))
+              .fillMaxHeight()
+              .weight(1f),
             border = BorderStroke(1.dp, N30)
           ) {
             Text(text = "이전", color = N70, style = xs2)
@@ -349,9 +397,13 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
           Spacer(modifier = Modifier.width(5.dp))
           TextButton(
             onClick = { next() },
-            modifier = Modifier.clip(RoundedCornerShape(8.dp)).fillMaxHeight().weight(1f).background(
-              color = Orange
-            ),
+            modifier = Modifier
+              .clip(RoundedCornerShape(8.dp))
+              .fillMaxHeight()
+              .weight(1f)
+              .background(
+                color = Orange
+              ),
             shape = RoundedCornerShape(8.dp),
 
             ) {
@@ -363,12 +415,15 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
       Spacer(modifier = Modifier.width(10.dp))
       Row {
         Column(
-          modifier = Modifier.fillMaxSize().weight(1f).border(
-            width = 1.dp,
-            color = N20,
-            shape = RoundedCornerShape(8.dp)
+          modifier = Modifier
+            .fillMaxSize()
+            .weight(1f)
+            .border(
+              width = 1.dp,
+              color = N20,
+              shape = RoundedCornerShape(8.dp)
 
-          ),
+            ),
           verticalArrangement = Arrangement.Center,
           horizontalAlignment = Alignment.CenterHorizontally
 

@@ -65,7 +65,9 @@ fun homeScreen(onClickWaiting: () -> Unit, onClickReservation: () -> Unit) {
       ) {
 
         Row(
-          modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp, vertical = 56.dp),
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 40.dp, vertical = 56.dp),
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.Bottom
         ) {
@@ -75,11 +77,17 @@ fun homeScreen(onClickWaiting: () -> Unit, onClickReservation: () -> Unit) {
               Text(text = "빠르게 입장", style = TextSizes.m2, color = S400)
               Text(text = "하고 싶다면?", style = TextSizes.m2, color = N80)
             }
-            Spacer(modifier = Modifier.height(20.dp).background(color = N20))
+            Spacer(
+              modifier = Modifier
+                .height(20.dp)
+                .background(color = N20)
+            )
             Text(text = "웨이팅하기", style = TextSizes.h2, color = N90)
           }
           Image(
-            modifier = Modifier.width(100.dp).height(100.dp),
+            modifier = Modifier
+              .width(100.dp)
+              .height(100.dp),
             painter = painterResource(id = R.drawable.clock), contentDescription = "웨이팅"
 
           )
@@ -103,7 +111,9 @@ fun homeScreen(onClickWaiting: () -> Unit, onClickReservation: () -> Unit) {
       ) {
 
         Row(
-          modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp, vertical = 56.dp),
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 40.dp, vertical = 56.dp),
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
@@ -114,11 +124,17 @@ fun homeScreen(onClickWaiting: () -> Unit, onClickReservation: () -> Unit) {
               Text(text = "원하는 시간에 입장", style = TextSizes.m2, color = S400)
               Text(text = "하고 싶다면?", style = TextSizes.m2, color = N80)
             }
-            Spacer(modifier = Modifier.height(20.dp).background(color = N20))
+            Spacer(
+              modifier = Modifier
+                .height(20.dp)
+                .background(color = N20)
+            )
             Text(text = "웨이팅하기", style = TextSizes.h2, color = N90)
           }
           Image(
-            modifier = Modifier.width(100.dp).height(100.dp),
+            modifier = Modifier
+              .width(100.dp)
+              .height(100.dp),
             painter = painterResource(id = R.drawable.calendar), contentDescription = "예약"
           )
         }

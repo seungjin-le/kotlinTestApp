@@ -1,3 +1,4 @@
+import SecureStorageHelper.saveObject
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,17 +33,28 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     viewModelScope.launch {
       try {
-        // --- 여기에서 실제 로그인 API 호출 ---
+
 
         ApiHelper.enqueueCall(
           RetrofitClient.apiService.login(form),
           onSuccess = {
 
             val accessToken = it.resultData.accessToken
+            if (accessToken == null) return@enqueueCall
+            SecureStorageHelper.saveString(KEY_AUTH_TOKEN, accessToken)
 
 
-            if (accessToken != null) SecureStorageHelper.saveString(appContext, KEY_AUTH_TOKEN, accessToken)
-            println("result success ====== ${accessToken}")
+
+            ApiHelper.enqueueCall(
+              RetrofitClient.apiService.getWaiting(),
+              onSuccess = {
+                if (it.resultData != null) saveObject("setting", it.resultData)
+              },
+              onError = {
+                println("info error ====== $it")
+              })
+
+
           },
           onError = {
             println("result error ====== $it")

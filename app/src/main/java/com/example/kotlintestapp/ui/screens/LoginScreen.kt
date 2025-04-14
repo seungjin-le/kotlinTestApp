@@ -42,10 +42,7 @@ fun loginScreen(
       password = password,
       role = "STORE"
     )
-
-
     loginViewModel.login(form)
-
   }
 
 
@@ -62,7 +59,9 @@ fun loginScreen(
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
       Image(
-        modifier = Modifier.width(130.dp).height(98.dp),
+        modifier = Modifier
+          .width(130.dp)
+          .height(98.dp),
         painter = painterResource(id = R.drawable.loginlogo), contentDescription = "웨이팅"
       )
 
@@ -83,7 +82,11 @@ fun loginScreen(
       Spacer(modifier = Modifier.height(24.dp))
       TextButton(
         onClick = { handleOnClickLogin() },
-        modifier = Modifier.clip(RoundedCornerShape(8.dp)).fillMaxWidth().height(44.dp).background(Orange),
+        modifier = Modifier
+          .clip(RoundedCornerShape(8.dp))
+          .fillMaxWidth()
+          .height(44.dp)
+          .background(Orange),
       ) {
         Text("로그인", style = s2, color = White)
       }

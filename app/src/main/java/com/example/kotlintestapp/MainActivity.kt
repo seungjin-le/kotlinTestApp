@@ -16,6 +16,7 @@ class MainActivity : ComponentActivity() {
 
 
   private val KEY_AUTH_TOKEN = "accessToken"
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     val windowInsetsController =
@@ -34,10 +35,16 @@ class MainActivity : ComponentActivity() {
       // applicationContext는 메모리 누수 방지에 더 안전
       val context = applicationContext
 
+      println()
+
 
       // null = true, "test" = false
       LaunchedEffect(Unit) {
-        useJwt = !SecureStorageHelper.getString(context, KEY_AUTH_TOKEN).isNullOrBlank()
+        SecureStorageHelper.init(context)
+
+
+
+        useJwt = !SecureStorageHelper.getString(KEY_AUTH_TOKEN).isNullOrBlank()
 
       }
 

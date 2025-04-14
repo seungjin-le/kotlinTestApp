@@ -2,15 +2,15 @@ package com.example.kotlintestapp.api
 
 import com.example.kotlintestapp.models.ChildCategory
 import com.example.kotlintestapp.models.FirstCategory
+import com.example.kotlintestapp.models.MenuList
 import com.example.kotlintestapp.models.StoreSetting
 import retrofit2.Call
 import retrofit2.http.*
 
 interface ApiService {
   // 웨이팅 설정
-  @GET("api/v1/waiting?store_id=67bfcb551c2bf321c1a107df")
+  @GET("api/v1/waiting")
   fun getWaiting(): Call<ApiResponse<StoreSetting>>
-//@Path("userId") userId: String
 
 
   // 로그인
@@ -30,7 +30,10 @@ interface ApiService {
 
   // 메뉴 리스트
   @GET("api/v1/menu?store_id=67bfcb551c2bf321c1a107df")
-  fun getMenuList(): Call<ApiResponse<List<ChildCategory>>>
+  fun getMenuList(
+    @Query("store_id") storeId: String,
+    @Query("category_id") categoryId: String
+  ): Call<ApiResponse<List<MenuList>>>
 
 
   // PUT 요청 예시

@@ -1,5 +1,6 @@
 package com.example.kotlintestapp.api
 
+import SecureStorageHelper.getString
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -15,14 +16,21 @@ object RetrofitClient {
   private val httpClient = OkHttpClient.Builder()
     .addInterceptor(Interceptor { chain ->
       val original = chain.request()
-
+      val token = getString("accessToken")
       // 기본 헤더 추가
-      //        .header("Authorization", "Bearer ${getAuthToken()}") // 인증 토큰은 필요에 따라 저장소에서 가져옴
+
       val request = original.newBuilder()
         .header("Content-Type", "application/json")
+        .header("Authorization", "Bearer $token")
         .header("Accept", "application/json").method(original.method(), original.body())
-        .build()
-      chain.proceed(request)
+
+
+      if (!token.isNullOrEmpty()) {
+        request.header("Authorization", "Bearer $token")
+      }
+
+  
+      chain.proceed(request.build())
     }).build()
 
 
