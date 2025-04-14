@@ -3,6 +3,7 @@ package com.example.kotlintestapp.ui.layouts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -21,12 +22,14 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kotlintestapp.api.ApiHelper
 import com.example.kotlintestapp.api.RetrofitClient
 import com.example.kotlintestapp.models.ChildCategory
 import com.example.kotlintestapp.models.FirstCategory
+import com.example.kotlintestapp.models.MenuList
 import com.example.kotlintestapp.ui.theme.*
 import com.example.kotlintestapp.ui.theme.TextSizes.h3
 import com.example.kotlintestapp.ui.theme.TextSizes.n2
@@ -41,16 +44,32 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
   var selectedFirst by remember { mutableStateOf<FirstCategory?>(null) }
   var childCategoryList by remember { mutableStateOf<List<ChildCategory>?>(emptyList()) }
   var selectedChild by remember { mutableStateOf<ChildCategory?>(null) }
+  var menuList by remember { mutableStateOf<List<MenuList>?>(null) }
+
+  fun getMenuList() {
+    if (selectedChild == null) {
+      ApiHelper.enqueueCall(
+        RetrofitClient.apiService.getMenuList(
+          storeId = "67bfcb551c2bf321c1a107df",
+          categoryId = selectedFirst!!.parentCategoryId
+        ),
+        onSuccess = {
+          menuList = it.resultData
+        },
+        onError = {
+          childCategoryList = emptyList()
+        })
+    } else {
+
+    }
+    //67bfcb551c2bf321c1a107df
+    //getMenuList
+    println(selectedChild)
 
 
-  fun getMenuList(child: ChildCategory) {
-    if (child == null) return
-    selectedChild = child
   }
 
   fun getChild(category: FirstCategory) {
-
-
     if (category == null) return
     selectedFirst = category
     ApiHelper.enqueueCall(
@@ -60,17 +79,15 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
       ),
       onSuccess = {
         childCategoryList = it.resultData
+        if (childCategoryList?.isNotEmpty() == true) selectedChild = childCategoryList!![0]
 
-        if (childCategoryList?.isNotEmpty() == true) getMenuList(childCategoryList!![0])
+
+        getMenuList()
 
       },
       onError = {
         childCategoryList = emptyList()
-
-
       })
-
-
   }
 
 
@@ -83,14 +100,8 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
       },
       onError = {
         firstCategoryList = emptyList()
-
-
       })
-
   }
-
-
-
 
   LaunchedEffect(Unit) {
     getFirst()
@@ -107,7 +118,8 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
     Column(
       modifier = Modifier
         .fillMaxWidth()
-        .weight(1f),
+        .weight(1f)
+        .background(White),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -121,7 +133,6 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
           .drawBehind { // Composable 컨텐츠 영역 뒤에 직접 그리기 시작
             val strokeWidth = 1.dp.toPx() // 테두리 두께를 Pixel 값으로 변환
             val y = size.height - strokeWidth / 2 // 선을 그릴 Y 좌표 계산 (컴포저블 높이의 맨 아래쪽)
-
             // 아래쪽에 선 그리기
             drawLine(
               color = N20, // 선 색상
@@ -137,55 +148,40 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
         firstCategoryList?.let {
           items(count = it.size) { index ->
 
-
+            if (index == 0) Spacer(modifier = Modifier.width(24.dp))
             Row(
-              modifier = Modifier,
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.Center
+              modifier = Modifier
+                .height(24.dp)
+                .padding(0.dp)
+                .clickable { getChild(firstCategoryList!![index]) },
+              verticalAlignment = Alignment.Top,
+              horizontalArrangement = Arrangement.Start
+
             ) {
-              Spacer(modifier = Modifier.width(if (index == 0) 24.dp else 0.dp))
-              Row(
+              Text(
+                modifier = Modifier,
+                textAlign = TextAlign.Start,
+                text = firstCategoryList!![index].categoryName,
+                style = n2,
+                color = N90,
+                letterSpacing = 0.sp
+              )
+              Box(
                 modifier = Modifier
-                  .height(24.dp)
-                  .padding(0.dp),
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.Center
-
-
-              ) {
-                TextButton(
-                  onClick = { getChild(firstCategoryList!![index]) },
-                  modifier = Modifier
-                    .fillMaxHeight()
-                    .wrapContentWidth()
-                    .clip(RoundedCornerShape(0.dp)),
-                  contentPadding = PaddingValues(0.dp),
-                  shape = RoundedCornerShape(0.dp),
-                ) {
-                  Text(
-                    modifier = Modifier
-                      .weight(1f),
-                    textAlign = TextAlign.Start,
-                    text = firstCategoryList!![index].categoryName,
-                    style = n2,
-                    color = N90,
-                  )
-                }
-                Box(
-                  modifier = Modifier
-                    .width(5.dp)
-                    .height(5.dp)
-                    .clip(CircleShape)
-                    .background(if (firstCategoryList!![index].parentCategoryId == selectedFirst?.parentCategoryId == true) Orange else White)
-                )
-
-              }
-              Spacer(modifier = Modifier.width(24.dp))
+                  .width(5.dp)
+                  .height(5.dp)
+                  .clip(CircleShape)
+                  .background(if (firstCategoryList!![index].parentCategoryId == selectedFirst?.parentCategoryId == true) Orange else White)
+              )
             }
+            Spacer(modifier = Modifier.width(24.dp))
           }
         }
 
       }
+
+
+
       if (!childCategoryList.isNullOrEmpty()) {
         Spacer(modifier = Modifier.height(20.dp))
         LazyRow(
@@ -200,7 +196,7 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
             items(categories.size) { index ->
               Spacer(modifier = Modifier.width(if (index == 0) 24.dp else 0.dp))
               TextButton(
-                onClick = { getMenuList(childCategoryList!![index]) },
+                onClick = { selectedChild = childCategoryList!![index]; getMenuList() },
                 modifier = Modifier
                   .defaultMinSize(minWidth = 150.dp)
                   .height(44.dp)
@@ -263,49 +259,72 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
 
             ) {
 
-            items(37) { index ->
-              Column {
-                TextButton(
-                  shape = RectangleShape,
-                  modifier = Modifier
-                    .height(158.dp)
-                    .width(110.dp)
-                    .clip(RoundedCornerShape(0.dp)),
-                  contentPadding = PaddingValues(0.dp),
-                  onClick = { /*TODO*/ }) {
-                  Column(
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-
-
-                  ) {
+//menuId=67c00529602bbf2a2325b517, menuSequence=1, menuImageUrl=null, menuName=카페31, menuDescription=null, menuPrice=4000, menuSoldOut=0, isAdultVerification=0, useDiscount=0, discountPrice=null,
+            menuList?.let { menuList ->
+              items(menuList.size) { index ->
+                Column {
+                  TextButton(
+                    shape = RectangleShape,
+                    modifier = Modifier
+                      .height(158.dp)
+                      .width(110.dp)
+                      .clip(RoundedCornerShape(0.dp)),
+                    contentPadding = PaddingValues(0.dp),
+                    onClick = { /*TODO*/ }) {
                     Column(
-                      modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f)
-                        .clip(shape = RoundedCornerShape(8.dp))
-                        .background(color = N20),
-                      verticalArrangement = Arrangement.Center,
+                      verticalArrangement = Arrangement.Top,
                       horizontalAlignment = Alignment.CenterHorizontally
 
+
                     ) {
-                      Text("이미지", style = n2, color = N80)
-                      Text("준비중", style = n2, color = N80)
+                      Column(
+                        modifier = Modifier
+                          .fillMaxSize()
+                          .weight(1f)
+                          .clip(shape = RoundedCornerShape(8.dp))
+                          .background(color = N20),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+
+                      ) {
+                        Text("이미지", style = n2, color = N80)
+                        Text("준비중", style = n2, color = N80)
+                      }
+                      Spacer(modifier = Modifier.height(8.dp))
+                      Text(
+                        text = menuList[index].menuName,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = N90,
+                        style = TextStyle(
+                          fontSize = 14.sp,
+                          fontWeight = FontWeight(500),
+                          lineHeight = 20.sp
+                        ),
+                      )
+
+                      if (menuList[index].menuSoldOut == 0) {
+                        Text(
+                          text = if (menuList[index].discountPrice != null) "${menuList[index].discountPrice}원" else "${menuList[index].menuPrice}원",
+                          style = s2,
+                          color = N80
+                        )
+                      } else {
+                        Text(
+                          text = "품절",
+                          style = s2,
+                          color = N80
+                        )
+                      }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                      text = "카테고리 $index", style = TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(500),
-                        lineHeight = 20.sp
-                      ), color = N90
-                    )
-                    Text(text = "카테고리_1 $index", style = s2, color = N80)
                   }
+
                 }
 
               }
             }
+
+
           }
 
         }

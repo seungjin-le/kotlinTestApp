@@ -29,7 +29,7 @@ interface ApiService {
   ): Call<ApiResponse<List<ChildCategory>>>
 
   // 메뉴 리스트
-  @GET("api/v1/menu?store_id=67bfcb551c2bf321c1a107df")
+  @GET("api/v1/menu")
   fun getMenuList(
     @Query("store_id") storeId: String,
     @Query("category_id") categoryId: String
