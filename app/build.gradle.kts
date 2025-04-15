@@ -79,5 +79,6 @@ dependencies {
   implementation("androidx.datastore:datastore-preferences-rxjava3:1.1.4")
   implementation("androidx.security:security-crypto:1.1.0-alpha06")
   implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+  implementation("io.coil-kt:coil-compose:2.4.0")
 
 }

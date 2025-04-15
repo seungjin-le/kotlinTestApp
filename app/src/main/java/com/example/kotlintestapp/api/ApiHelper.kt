@@ -32,12 +32,15 @@ object ApiHelper {
     call.enqueue(object : Callback<T> {
       override fun onResponse(call: Call<T>, response: Response<T>) {
 
+//        println("request = ${call.request().url}------")
+
 
         if (response.isSuccessful) {
           response.body()?.let {
             onSuccess(it)
           } ?: onError("응답 데이터가 없습니다")
         } else {
+          println("API 오류: ${response.code()} ${response.message()}")
           onError("API 오류: ${response.code()} ${response.message()}")
         }
       }

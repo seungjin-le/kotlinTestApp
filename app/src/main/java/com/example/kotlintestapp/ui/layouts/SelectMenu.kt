@@ -25,7 +25,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.kotlintestapp.api.ApiHelper
+import com.example.kotlintestapp.api.ApiResponse
 import com.example.kotlintestapp.api.RetrofitClient
 import com.example.kotlintestapp.models.ChildCategory
 import com.example.kotlintestapp.models.FirstCategory
@@ -35,6 +37,12 @@ import com.example.kotlintestapp.ui.theme.TextSizes.h3
 import com.example.kotlintestapp.ui.theme.TextSizes.n2
 import com.example.kotlintestapp.ui.theme.TextSizes.s2
 import com.example.kotlintestapp.ui.theme.TextSizes.xs2
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
 
 
 @Composable
@@ -103,8 +111,32 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
       })
   }
 
+  val coroutineScope = rememberCoroutineScope()
+  fun getImageUrl(url: String): String {
+
+
+    var src = ""
+
+
+    RetrofitClient.apiService.downloadImage(url).enqueue(object : Callback<ApiResponse<File>> {
+      override fun onResponse(call: Call<ApiResponse<File>>, response: Response<ApiResponse<File>>) {
+        println("response ============= $response ${call.request()}")
+        src = "https://www.sinasamaki.com/content/images/size/w1200/2023/02/my_-heart_1440_1440.png"
+      }
+
+      override fun onFailure(call: Call<ApiResponse<File>>, t: Throwable) {
+        println("error = $t")
+        src = "https://www.sinasamaki.com/content/images/size/w1200/2023/02/my_-heart_1440_1440.png"
+      }
+    })
+
+
+    return src
+  }
+
   LaunchedEffect(Unit) {
     getFirst()
+
   }
 
 
@@ -259,7 +291,7 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
 
             ) {
 
-//menuId=67c00529602bbf2a2325b517, menuSequence=1, menuImageUrl=null, menuName=카페31, menuDescription=null, menuPrice=4000, menuSoldOut=0, isAdultVerification=0, useDiscount=0, discountPrice=null,
+
             menuList?.let { menuList ->
               items(menuList.size) { index ->
                 Column {
@@ -287,9 +319,35 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
                         horizontalAlignment = Alignment.CenterHorizontally
 
                       ) {
-                        Text("이미지", style = n2, color = N80)
-                        Text("준비중", style = n2, color = N80)
+                        if (menuList[index].menuImageUrl != null) {
+//                          LaunchedEffect(Unit) {
+//                            try {
+//
+//
+//                              println("src22222---------- ${getImageUrl(menuList[index].menuImageUrl)}")
+//
+//                            } catch (e: CancellationException) {
+//
+//                            }
+//                          }
+                          coroutineScope.launch {
+                            coroutineScope {
+                              println("src22222---------- ${getImageUrl(menuList[index].menuImageUrl)}")
+                            }
+                          }
+
+
+                          AsyncImage(
+                            model = "https://www.sinasamaki.com/content/images/size/w1200/2023/02/my_-heart_1440_1440.png",
+                            contentDescription = "menu_image",
+                          )
+                        } else {
+                          Text("이미지", style = n2, color = N80)
+                          Text("준비중", style = n2, color = N80)
+                        }
+
                       }
+//                      downloadImage
                       Spacer(modifier = Modifier.height(8.dp))
                       Text(
                         text = menuList[index].menuName,
@@ -303,7 +361,7 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
                         ),
                       )
 
-                      if (menuList[index].menuSoldOut == 0) {
+                      if (menuList[index].menuSoldOut == 1) {
                         Text(
                           text = if (menuList[index].discountPrice != null) "${menuList[index].discountPrice}원" else "${menuList[index].menuPrice}원",
                           style = s2,

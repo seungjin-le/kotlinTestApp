@@ -6,8 +6,17 @@ import com.example.kotlintestapp.models.MenuList
 import com.example.kotlintestapp.models.StoreSetting
 import retrofit2.Call
 import retrofit2.http.*
+import java.io.File
 
 interface ApiService {
+
+
+  //
+//  @GET("api/v1/common/image-download/67c00529602bbf2a2325b516/c8e9aeb7-5354-49e2-a804-72e1d4a2ec77.png")
+  @Headers("responseType: blob")
+  @GET("api/v1/common/image-download/{filepath}")
+  fun downloadImage(@Path("filepath") filepath: String): Call<ApiResponse<File>>
+
   // 웨이팅 설정
   @GET("api/v1/waiting")
   fun getWaiting(): Call<ApiResponse<StoreSetting>>

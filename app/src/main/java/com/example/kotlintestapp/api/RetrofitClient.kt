@@ -22,23 +22,17 @@ object RetrofitClient {
       val request = original.newBuilder()
         .header("Content-Type", "application/json")
         .header("Authorization", "Bearer $token")
-        .header("Accept", "application/json").method(original.method(), original.body())
+        .header("Accept", "application/json").method(original.method, original.body)
 
 
       if (!token.isNullOrEmpty()) {
+        
         request.header("Authorization", "Bearer $token")
       }
 
-  
+
       chain.proceed(request.build())
     }).build()
-
-
-  // 인증 토큰을 가져오는 함수 (실제 구현은 저장소에서 가져와야 함)
-  private fun getAuthToken(): String {
-    // SharedPreferences나 다른 저장소에서 토큰을 가져오는 로직
-    return ""  // 실제 토큰으로 교체해야 함
-  }
 
 
   private val gson = GsonBuilder().setLenient().create()

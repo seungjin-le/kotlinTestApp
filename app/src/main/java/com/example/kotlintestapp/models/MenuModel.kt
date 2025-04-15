@@ -64,7 +64,7 @@ data class MenuList(
   @SerializedName("menu_price")
   val menuPrice: Number,
   @SerializedName("menu_sold_out")
-  val menuSoldOut: Number,
+  val menuSoldOut: Int,
   @SerializedName("is_adult_verification")
   val isAdultVerification: Number,
   @SerializedName("use_discount")
