@@ -17,6 +17,7 @@ tracingPerfettoHandshake = "1.0.0"
 volley = "1.2.1"
 recyclerview = "1.3.2"
 navigationCompose = "2.8.9"
+uiTestAndroid = "1.7.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +43,7 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 volley = { module = "com.android.volley:volley", version.ref = "volley" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-ui-test-android = { group = "androidx.compose.ui", name = "ui-test-android", version.ref = "uiTestAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
