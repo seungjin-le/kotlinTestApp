@@ -2,9 +2,12 @@ package com.example.kotlintestapp.ui.components.items
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -15,12 +18,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 
-//"https://www.sinasamaki.com/content/images/size/w1200/2023/02/my_-heart_1440_1440.png",
 @Composable
 fun menuImage(url: String) {
   var bitmap by remember { mutableStateOf<ImageBitmap?>(null) }
-  var width by remember { mutableStateOf(0) }
-  var height by remember { mutableStateOf(0) }
+
 
   suspend fun getImageBitmap(url: String): Bitmap? {
     return withContext(Dispatchers.IO) {
@@ -36,22 +37,27 @@ fun menuImage(url: String) {
 
   LaunchedEffect(url) {
     val bmp = getImageBitmap(url)
-    if (bmp != null) {
-      print("width = $width, height = $height")
-      bitmap = bmp.asImageBitmap()
-
-      print("width = $width, height = $height")
-    }
+    if (bmp != null) bitmap = bmp.asImageBitmap()
   }
 
 
+//
 
-  if (bitmap != null) {
+  AnimatedVisibility(
+    bitmap != null, modifier = Modifier,
+    enter =
+      fadeIn(tween(durationMillis = 500), initialAlpha = 0.4f),
+    exit =
+      fadeOut(tween(durationMillis = 500))
+  ) {
+
     Image(
-      bitmap = bitmap!!, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop
+      bitmap = bitmap!!,
+      contentDescription = null,
+      modifier = Modifier.fillMaxSize(),
+      contentScale = ContentScale.Crop
     )
-  } else {
-    // Placeholder or loading
-    Text(".....Loading")
+
+
   }
 }
