@@ -5,7 +5,7 @@ plugins {
 
 android {
   namespace = "com.example.kotlintestapp"
-  compileSdk = 34
+  compileSdk = 35
   viewBinding.isEnabled = true
 
   defaultConfig {

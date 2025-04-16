@@ -131,64 +131,59 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
     ) {
       Text("주문하실 메뉴를 선택해 주세요.", style = h3, color = N90)
       Spacer(modifier = Modifier.height(20.dp))
-      AnimatedVisibility(
-        firstCategoryList != null, modifier = Modifier,
-        enter =
-          fadeIn(tween(durationMillis = 500), initialAlpha = 0.4f),
-        exit =
-          fadeOut(tween(durationMillis = 500))
+
+      LazyRow(
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(40.dp)
+          .drawBehind { // Composable 컨텐츠 영역 뒤에 직접 그리기 시작
+            val strokeWidth = 1.dp.toPx() // 테두리 두께를 Pixel 값으로 변환
+            val y = size.height - strokeWidth / 2 // 선을 그릴 Y 좌표 계산 (컴포저블 높이의 맨 아래쪽)
+            // 아래쪽에 선 그리기
+            drawLine(
+              color = N20, // 선 색상
+              start = Offset(0f, y), // 시작점 (왼쪽 아래)
+              end = Offset(size.width, y), // 끝점 (오른쪽 아래)
+              strokeWidth = strokeWidth // 선 두께
+            )
+          },
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
       ) {
-        LazyRow(
-          modifier = Modifier
-            .fillMaxWidth()
-            .height(40.dp)
-            .drawBehind { // Composable 컨텐츠 영역 뒤에 직접 그리기 시작
-              val strokeWidth = 1.dp.toPx() // 테두리 두께를 Pixel 값으로 변환
-              val y = size.height - strokeWidth / 2 // 선을 그릴 Y 좌표 계산 (컴포저블 높이의 맨 아래쪽)
-              // 아래쪽에 선 그리기
-              drawLine(
-                color = N20, // 선 색상
-                start = Offset(0f, y), // 시작점 (왼쪽 아래)
-                end = Offset(size.width, y), // 끝점 (오른쪽 아래)
-                strokeWidth = strokeWidth // 선 두께
+
+
+        firstCategoryList?.let {
+
+          items(count = it.size) { index ->
+            if (index == 0) Spacer(modifier = Modifier.width(24.dp))
+
+            Row(
+              modifier = Modifier
+                .height(24.dp)
+                .padding(0.dp)
+                .clickable { getChild(firstCategoryList!![index]) },
+              verticalAlignment = Alignment.Top,
+              horizontalArrangement = Arrangement.Start
+
+            ) {
+              Text(
+                modifier = Modifier,
+                textAlign = TextAlign.Start,
+                text = firstCategoryList!![index].categoryName,
+                style = n2,
+                color = N90,
+                letterSpacing = 0.sp
               )
-            },
-          horizontalArrangement = Arrangement.Start,
-          verticalAlignment = Alignment.CenterVertically
-        ) {
-
-
-          firstCategoryList?.let {
-            items(count = it.size) { index ->
-
-              if (index == 0) Spacer(modifier = Modifier.width(24.dp))
-              Row(
+              Box(
                 modifier = Modifier
-                  .height(24.dp)
-                  .padding(0.dp)
-                  .clickable { getChild(firstCategoryList!![index]) },
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.Start
-
-              ) {
-                Text(
-                  modifier = Modifier,
-                  textAlign = TextAlign.Start,
-                  text = firstCategoryList!![index].categoryName,
-                  style = n2,
-                  color = N90,
-                  letterSpacing = 0.sp
-                )
-                Box(
-                  modifier = Modifier
-                    .width(5.dp)
-                    .height(5.dp)
-                    .clip(CircleShape)
-                    .background(if (firstCategoryList!![index].parentCategoryId == selectedFirst?.parentCategoryId == true) Orange else White)
-                )
-              }
-              Spacer(modifier = Modifier.width(24.dp))
+                  .width(5.dp)
+                  .height(5.dp)
+                  .clip(CircleShape)
+                  .background(if (firstCategoryList!![index].parentCategoryId == selectedFirst?.parentCategoryId == true) Orange else White)
+              )
             }
+
+            Spacer(modifier = Modifier.width(24.dp))
           }
 
 
@@ -279,71 +274,78 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
 
             menuList?.let { menuList ->
               items(menuList.size) { index ->
-                Column {
-                  TextButton(
-                    shape = RectangleShape,
-                    modifier = Modifier
-                      .height(158.dp)
-                      .width(110.dp)
-                      .clip(RoundedCornerShape(0.dp)),
-                    contentPadding = PaddingValues(0.dp),
-                    onClick = { /*TODO*/ }) {
-                    Column(
-                      verticalArrangement = Arrangement.Top,
-                      horizontalAlignment = Alignment.CenterHorizontally
-
-
-                    ) {
+                AnimatedVisibility(
+                  true, modifier = Modifier,
+                  enter =
+                    fadeIn(tween(durationMillis = 4500), initialAlpha = 0.4f),
+                  exit =
+                    fadeOut(tween(durationMillis = 500))
+                ) {
+                  Column {
+                    TextButton(
+                      shape = RectangleShape,
+                      modifier = Modifier
+                        .height(158.dp)
+                        .width(110.dp)
+                        .clip(RoundedCornerShape(0.dp)),
+                      contentPadding = PaddingValues(0.dp),
+                      onClick = { /*TODO*/ }) {
                       Column(
-                        modifier = Modifier
-                          .fillMaxSize()
-                          .weight(1f)
-                          .clip(shape = RoundedCornerShape(8.dp))
-                          .background(color = N20),
-                        verticalArrangement = Arrangement.Center,
+                        verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
 
+
                       ) {
-                        if (menuList[index].menuImageUrl != null) {
-                          menuImage(menuList[index].menuImageUrl)
+                        Column(
+                          modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f)
+                            .clip(shape = RoundedCornerShape(8.dp))
+                            .background(color = N20),
+                          verticalArrangement = Arrangement.Center,
+                          horizontalAlignment = Alignment.CenterHorizontally
+
+                        ) {
+                          if (menuList[index].menuImageUrl != null) {
+                            menuImage(menuList[index].menuImageUrl)
 //
 //
-                        } else {
-                          Text("이미지", style = n2, color = N80)
-                          Text("준비중", style = n2, color = N80)
+                          } else {
+                            Text("이미지", style = n2, color = N80)
+                            Text("준비중", style = n2, color = N80)
+                          }
+
                         }
-
-                      }
 //                      downloadImage
-                      Spacer(modifier = Modifier.height(8.dp))
-                      Text(
-                        text = menuList[index].menuName,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = N90,
-                        style = TextStyle(
-                          fontSize = 14.sp,
-                          fontWeight = FontWeight(500),
-                          lineHeight = 20.sp
-                        ),
-                      )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                          text = menuList[index].menuName,
+                          maxLines = 1,
+                          overflow = TextOverflow.Ellipsis,
+                          color = N90,
+                          style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight(500),
+                            lineHeight = 20.sp
+                          ),
+                        )
 
-                      if (menuList[index].menuSoldOut == 1) {
-                        Text(
-                          text = if (menuList[index].discountPrice != null) "${menuList[index].discountPrice}원" else "${menuList[index].menuPrice}원",
-                          style = s2,
-                          color = N80
-                        )
-                      } else {
-                        Text(
-                          text = "품절",
-                          style = s2,
-                          color = N80
-                        )
+                        if (menuList[index].menuSoldOut == 1) {
+                          Text(
+                            text = if (menuList[index].discountPrice != null) "${menuList[index].discountPrice}원" else "${menuList[index].menuPrice}원",
+                            style = s2,
+                            color = N80
+                          )
+                        } else {
+                          Text(
+                            text = "품절",
+                            style = s2,
+                            color = N80
+                          )
+                        }
                       }
                     }
                   }
-
                 }
 
               }
