@@ -32,6 +32,7 @@ fun SecondCategories(
 
 
   if (!items.isNullOrEmpty()) {
+    Spacer(modifier = Modifier.height(20.dp))
     Row(
       modifier = Modifier.fillMaxWidth().height(44.dp),
       horizontalArrangement = Arrangement.Start,
@@ -47,23 +48,17 @@ fun SecondCategories(
 
 
         items(items.size) { index ->
-
           val visible = remember { mutableStateOf(false) }
-          val isSelected = remember { mutableStateOf(false) }
-
           LaunchedEffect(Unit) {
             visible.value = true
-
           }
 
           AnimatedOpacity(
             visible = visible.value,
           ) {
-
-
             TextButton(
               onClick = { onChange(items[index]) },
-              enabled = !(items[index].childCategoryId == selected!!.childCategoryId),
+              enabled = items[index].childCategoryId != selected!!.childCategoryId,
               modifier = Modifier
                 .defaultMinSize(minWidth = 150.dp).clip(RoundedCornerShape(8.dp)).border(
                   width = 1.dp,
@@ -91,6 +86,6 @@ fun SecondCategories(
       }
 
     }
-    Spacer(modifier = Modifier.height(20.dp))
+
   }
 }

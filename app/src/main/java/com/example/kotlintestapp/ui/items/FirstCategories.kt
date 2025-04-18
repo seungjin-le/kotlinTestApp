@@ -67,7 +67,9 @@ fun FirstCategories(
             modifier = Modifier
               .height(24.dp)
               .padding(0.dp)
-              .clickable { onChange(items[index]) },
+              .clickable(
+                enabled = items[index].parentCategoryId != selected?.parentCategoryId
+              ) { onChange(items[index]) },
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.Start
 

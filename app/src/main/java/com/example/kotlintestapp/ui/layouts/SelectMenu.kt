@@ -1,9 +1,9 @@
 package com.example.kotlintestapp.ui.layouts
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -20,7 +21,9 @@ import com.example.kotlintestapp.api.RetrofitClient
 import com.example.kotlintestapp.models.ChildCategory
 import com.example.kotlintestapp.models.FirstCategory
 import com.example.kotlintestapp.models.MenuList
+import com.example.kotlintestapp.ui.components.items.AnimatedOpacity
 import com.example.kotlintestapp.ui.items.FirstCategories
+import com.example.kotlintestapp.ui.items.Loading
 import com.example.kotlintestapp.ui.items.MenuList
 import com.example.kotlintestapp.ui.items.SecondCategories
 import com.example.kotlintestapp.ui.theme.*
@@ -36,13 +39,13 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
   var childCategoryList by remember { mutableStateOf<List<ChildCategory>?>(emptyList()) }
   var selectedChild by remember { mutableStateOf<ChildCategory?>(null) }
   var menuList by remember { mutableStateOf<List<MenuList>?>(null) }
-
+  var isLoading by remember { mutableStateOf<Boolean>(false) }
   fun getMenuList() {
 
 
     val id = selectedChild?.childCategoryId ?: selectedFirst?.parentCategoryId
     if (id == null) return
-
+    isLoading = true
     ApiHelper.enqueueCall(
       RetrofitClient.apiService.getMenuList(
         storeId = "67bfcb551c2bf321c1a107df",
@@ -50,14 +53,18 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
       ),
       onSuccess = { it ->
         menuList = it.resultData ?: emptyList()
+        isLoading = false
       },
       onError = {
         childCategoryList = emptyList()
+        isLoading = false
       })
+
   }
 
   fun getChild(category: FirstCategory) {
     if (category == null) return
+    isLoading = true
     selectedFirst = category
     ApiHelper.enqueueCall(
       RetrofitClient.apiService.getChildCategory(
@@ -66,19 +73,20 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
       ),
       onSuccess = {
         childCategoryList = it.resultData
-        if (childCategoryList?.isNotEmpty() == true) selectedChild = childCategoryList!![0]
-
-
+        selectedChild = if (childCategoryList?.isNotEmpty() == true) childCategoryList!![0]
+        else null
         getMenuList()
 
       },
       onError = {
         childCategoryList = emptyList()
+        isLoading = false
       })
   }
 
 
   fun getFirst() {
+    isLoading = true
     ApiHelper.enqueueCall(
       RetrofitClient.apiService.getFirstCategory(),
       onSuccess = {
@@ -87,6 +95,7 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
       },
       onError = {
         firstCategoryList = emptyList()
+        isLoading = false
       })
   }
 
@@ -95,7 +104,7 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
     getFirst()
   }
 
-
+  Loading(isLoading)
   Column(
     modifier = Modifier
       .fillMaxSize()
@@ -119,16 +128,6 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
         selected = selectedFirst,
       )
 
-      Spacer(modifier = Modifier.height(20.dp))
-      SecondCategories(
-        items = childCategoryList,
-        onChange = {
-          selectedChild = it
-          getMenuList()
-
-        },
-        selected = selectedChild,
-      )
 
 
       Column(
@@ -139,6 +138,15 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
       ) {
+
+        SecondCategories(
+          items = childCategoryList,
+          onChange = {
+            selectedChild = it
+            getMenuList()
+          },
+          selected = selectedChild,
+        )
 
         Column(
           modifier = Modifier
@@ -170,10 +178,8 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
         .height(178.dp)
         .padding(vertical = 20.dp)
     ) {
-
       Spacer(modifier = Modifier.width(20.dp))
       Column(
-
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -209,13 +215,13 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
           modifier = Modifier.fillMaxWidth()
         ) {
           Text(
-            "주문수량", style = TextStyle(
+            "총 주문금액", style = TextStyle(
               fontSize = 14.sp,
               fontWeight = FontWeight(500),
               lineHeight = 20.sp
             ), color = N90
           )
-          Text("0개", style = s2, color = N90)
+          Text("0원", style = s2, color = N90)
         }
         Spacer(modifier = Modifier.height(12.dp))
         Row(
@@ -255,31 +261,70 @@ fun selectMenu(prev: () -> Unit, next: () -> Unit) {
 
       }
       Spacer(modifier = Modifier.width(10.dp))
-      Row {
-        Column(
-          modifier = Modifier
-            .fillMaxSize()
-            .weight(1f)
-            .border(
-              width = 1.dp,
-              color = N20,
-              shape = RoundedCornerShape(8.dp)
+      LazyRow(
+        modifier = Modifier
+          .fillMaxHeight().weight(1f),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+      ) {
 
-            ),
-          verticalArrangement = Arrangement.Center,
-          horizontalAlignment = Alignment.CenterHorizontally
+        items(count = 4) { index ->
+          if (index == 0) Spacer(modifier = Modifier.width(24.dp))
+          val visible = remember { mutableStateOf(false) }
+          LaunchedEffect(Unit) {
+            visible.value = true
+          }
 
-        ) {
-          Text(
-            "메뉴를 선택해 주세요.", style = TextStyle(
-              fontSize = 18.sp,
-              fontWeight = FontWeight(500),
-              lineHeight = 26.sp
-            ), color = N90
-          )
+          AnimatedOpacity(
+            visible = visible.value,
+          ) {
+            Row(
+              modifier = Modifier.height(138.dp),
+            ) {
+              Column(
+                modifier = Modifier.fillMaxHeight().width(200.dp)
+                  .border(width = 1.dp, color = N20, shape = RoundedCornerShape(8.dp)).background(Gray)
+                  .padding(horizontal = 18.dp, vertical = 20.dp)
+
+                  .clip(RoundedCornerShape(8.dp))
+              ) {
+
+                Row(
+                  modifier = Modifier.fillMaxWidth(),
+                  verticalAlignment = Alignment.CenterVertically,
+                  horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                  Text("부대정식", modifier = Modifier, N90, style = s2)
+                  Text("16,000원", modifier = Modifier, N80, style = s2)
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                LazyColumn(
+                  modifier = Modifier.height(36.dp).fillMaxWidth(),
+                ) {
+                  items(count = 3) { index ->
+                    Text("옵션 : 부대정식 $index", modifier = Modifier, N80, style = xs2)
+                  }
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+                Row {
+                  Image(
+                    painter = painterResource(id = R.drawable.plus_btn),
+                    contentDescription = "plus",
+                    modifier = Modifier.size(24.dp).clip(RoundedCornerShape(8.dp)).background(Orange).clickable { })
+
+
+                  Text("16,000원")
+                }
+
+
+              }
+              Spacer(modifier = Modifier.width(10.dp))
+            }
+          }
         }
-        Spacer(modifier = Modifier.width(24.dp))
       }
+
     }
   }
 }
