@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.example.kotlintestapp.ui.layouts.mainLayout
 import com.example.kotlintestapp.ui.layouts.memberCount
 import com.example.kotlintestapp.ui.layouts.selectMenu
+import com.example.kotlintestapp.ui.layouts.waitingPhone
 import com.example.kotlintestapp.ui.theme.N30
 import com.example.kotlintestapp.ui.theme.N70
 import com.example.kotlintestapp.ui.theme.Orange
@@ -23,7 +24,7 @@ import com.example.kotlintestapp.ui.theme.White
 @Composable
 fun waitingScreen(onClickHome: () -> Unit) {
 
-  var step by remember { mutableStateOf(1) }
+  var step by remember { mutableStateOf(2) }
   var normalCount by remember { mutableStateOf(0) }
   var infantCount by remember { mutableStateOf(0) }
 
@@ -52,16 +53,19 @@ fun waitingScreen(onClickHome: () -> Unit) {
 
   mainLayout() {
 
-    Column {
+    Column(
+      modifier = Modifier.background(White)
+    ) {
       Column(
         modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(1f),
       ) {
         if (step == 0) memberCount(normalCount, infantCount, ::handleOnChangeCount)
         if (step == 1) selectMenu(::handleOnClickPrev, ::handleOnClickNext)
+        if (step == 2) waitingPhone()
       }
 
 
-      if (step != 1) {
+      if (step == 0) {
         Row(
           modifier = Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 24.dp),
         ) {

@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kotlintestapp.R
 import com.example.kotlintestapp.api.LoginRequest
-import com.example.kotlintestapp.ui.components.inputs.checkBox
+import com.example.kotlintestapp.ui.components.inputs.CheckBox
 import com.example.kotlintestapp.ui.components.inputs.textInput
 import com.example.kotlintestapp.ui.theme.N50
 import com.example.kotlintestapp.ui.theme.Orange
@@ -75,7 +75,7 @@ fun loginScreen(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        checkBox(value = saveId, onChange = { value -> saveId = value })
+        CheckBox(value = saveId, onChange = { value -> saveId = value })
         Spacer(modifier = Modifier.width(4.dp))
         Text(text = "아이디 저장", style = s2, color = N50)
       }

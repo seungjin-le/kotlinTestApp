@@ -52,7 +52,7 @@ object TextSizes {
 
   val l1 = TextStyle(
     fontSize = 20.sp,
-    fontWeight = FontWeight(600),
+    fontWeight = FontWeight(500),
     lineHeight = 26.sp
   )
 
@@ -64,7 +64,7 @@ object TextSizes {
 
   val m1 = TextStyle(
     fontSize = 18.sp,
-    fontWeight = FontWeight(600),
+    fontWeight = FontWeight(500),
     lineHeight = 26.sp
   )
 
@@ -76,7 +76,7 @@ object TextSizes {
 
   val n1 = TextStyle(
     fontSize = 16.sp,
-    fontWeight = FontWeight(600),
+    fontWeight = FontWeight(500),
     lineHeight = 24.sp
   )
 
@@ -88,7 +88,7 @@ object TextSizes {
 
   val s1 = TextStyle(
     fontSize = 14.sp,
-    fontWeight = FontWeight(600),
+    fontWeight = FontWeight(500),
     lineHeight = 20.sp
   )
 
