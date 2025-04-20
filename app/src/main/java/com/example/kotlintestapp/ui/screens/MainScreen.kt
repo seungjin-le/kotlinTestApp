@@ -129,7 +129,7 @@ fun homeScreen(onClickWaiting: () -> Unit, onClickReservation: () -> Unit) {
                 .height(20.dp)
                 .background(color = N20)
             )
-            Text(text = "웨이팅하기", style = TextSizes.h2, color = N90)
+            Text(text = "예약하기", style = TextSizes.h2, color = N90)
           }
           Image(
             modifier = Modifier

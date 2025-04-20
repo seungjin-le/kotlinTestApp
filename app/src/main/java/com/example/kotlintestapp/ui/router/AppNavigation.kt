@@ -4,19 +4,21 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.kotlintestapp.ui.screens.homeScreen
-import com.example.kotlintestapp.ui.screens.loginScreen
-import com.example.kotlintestapp.ui.screens.reservationScreen
-import com.example.kotlintestapp.ui.screens.waitingScreen
+import com.example.kotlintestapp.ui.screens.*
 
 @Composable
 fun appRouter(useJwt: Boolean?) {
   val navController = rememberNavController()
 
+
+  fun handleOnClickRoute(route: String) {
+    navController.navigate(route) { popUpTo(navController.graph.startDestinationId) { inclusive = true } }
+  }
+
   NavHost(
     navController = navController,
 //    startDestination = if (useJwt == true) "home" else "login"
-    startDestination = "waiting"
+    startDestination = "reservation"
   ) {
     composable("home") {
       homeScreen(
@@ -41,6 +43,17 @@ fun appRouter(useJwt: Boolean?) {
         home = { navController.navigate("home") }
       )
     }
+    composable("RightIn") {
+      RightIn(
+        onClick = { handleOnClickRoute(it) }
+      )
+    }
+    composable("Impossibility") {
+      Impossibility(
+        onClick = { handleOnClickRoute(it) }
+      )
+    }
+
   }
 }
 

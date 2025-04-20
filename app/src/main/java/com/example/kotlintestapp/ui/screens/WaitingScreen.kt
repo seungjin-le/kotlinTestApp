@@ -24,7 +24,7 @@ import com.example.kotlintestapp.ui.theme.White
 @Composable
 fun waitingScreen(onClickHome: () -> Unit) {
 
-  var step by remember { mutableStateOf(2) }
+  var step by remember { mutableStateOf(0) }
   var normalCount by remember { mutableStateOf(0) }
   var infantCount by remember { mutableStateOf(0) }
 
@@ -59,6 +59,7 @@ fun waitingScreen(onClickHome: () -> Unit) {
       Column(
         modifier = Modifier.fillMaxWidth().fillMaxHeight().weight(1f),
       ) {
+
         if (step == 0) memberCount(normalCount, infantCount, ::handleOnChangeCount)
         if (step == 1) selectMenu(::handleOnClickPrev, ::handleOnClickNext)
         if (step == 2) waitingPhone()
