@@ -10,6 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -29,9 +31,14 @@ fun DropDown(
 ) {
 
   var show by remember { mutableStateOf(false) }
+  var columnWidth by remember { mutableStateOf(0.dp) }
+  val density = LocalDensity.current
 
   Column(
-    modifier = modifier
+    modifier = modifier.onGloballyPositioned { coordinates ->
+      // 부모 Column의 너비를 측정
+      columnWidth = with(density) { coordinates.size.width.toDp() }
+    }
   ) {
 
     Row(
@@ -52,21 +59,19 @@ fun DropDown(
     val hourScrollState = rememberScrollState()
 
 
-
-
     DropdownMenu(
-      modifier = Modifier.width(228.dp).background(White)
-        .clip(shape = RoundedCornerShape(8.dp)).padding(0.dp, 2.dp)
-        .heightIn(max = 270.dp),
+      modifier = Modifier.width(columnWidth).background(White).clip(shape = RoundedCornerShape(8.dp))
+        .padding(0.dp, 2.dp).heightIn(max = 270.dp),
       expanded = show,
       onDismissRequest = {
+        show = !show
         onClose()
-        show = false
+
       },
       scrollState = hourScrollState,
       offset = DpOffset(0.dp, 0.dp),
       properties = PopupProperties(
-        focusable = false,
+        focusable = true,
         dismissOnBackPress = true,
         dismissOnClickOutside = true,
         clippingEnabled = true
@@ -76,9 +81,20 @@ fun DropDown(
       items.let {
         it.forEach { item ->
           DropdownMenuItem(
-            modifier = modifier.height(50.dp).padding(horizontal = 6.dp),
-            text = { Text(item, style = n2, color = N50) },
-            onClick = { show = false }
+            modifier = Modifier.height(50.dp).fillMaxWidth()
+              .padding(horizontal = 6.dp).clip(shape = RoundedCornerShape(8.dp)),
+            onClick = { show = false },
+            text = {
+              Text(
+                item,
+                style = n2,
+                color = N50,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+              )
+            },
+
+//            colors = TODO(),
+            contentPadding = PaddingValues(0.dp),
           )
         }
 
