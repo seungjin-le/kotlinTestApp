@@ -23,16 +23,73 @@ import com.example.kotlintestapp.ui.theme.Orange
 import com.example.kotlintestapp.ui.theme.TextSizes.n2
 import com.example.kotlintestapp.ui.theme.White
 
+data class Hour(
+  val label: String,
+  val value: String
+)
+
+data class Minute(
+  val label: String,
+  val value: String
+)
+
+
+val hour = listOf(
+  Hour(label = "00:00", value = "0"),
+  Hour(label = "01:00", value = "1"),
+  Hour(label = "02:00", value = "2"),
+  Hour(label = "03:00", value = "3"),
+  Hour(label = "04:00", value = "4"),
+  Hour(label = "05:00", value = "5"),
+  Hour(label = "06:00", value = "6"),
+  Hour(label = "07:00", value = "7"),
+  Hour(label = "08:00", value = "8"),
+  Hour(label = "09:00", value = "9"),
+  Hour(label = "10:00", value = "10"),
+  Hour(label = "11:00", value = "11"),
+  Hour(label = "12:00", value = "12"),
+  Hour(label = "13:00", value = "13"),
+  Hour(label = "14:00", value = "14"),
+  Hour(label = "15:00", value = "15"),
+  Hour(label = "16:00", value = "16"),
+  Hour(label = "17:00", value = "17"),
+  Hour(label = "18:00", value = "18"),
+  Hour(label = "19:00", value = "19"),
+  Hour(label = "20:00", value = "20"),
+  Hour(label = "21:00", value = "21"),
+  Hour(label = "22:00", value = "22"),
+  Hour(label = "23:00", value = "23"),
+
+  )
+
+val minute = listOf(
+  Minute(label = "00", value = "0"),
+  Minute(label = "10", value = "10"),
+  Minute(label = "20", value = "20"),
+  Minute(label = "30", value = "30"),
+  Minute(label = "40", value = "40"),
+  Minute(label = "50", value = "50"),
+  Minute(label = "60", value = "60"),
+)
+
+
 @Composable
 fun DropDown(
-  onClose: () -> Unit,
+  onClose: (String) -> Unit,
   modifier: Modifier = Modifier,
   items: List<String> = listOf(),
+  value: String = ""
 ) {
 
   var show by remember { mutableStateOf(false) }
   var columnWidth by remember { mutableStateOf(0.dp) }
   val density = LocalDensity.current
+
+
+  fun handleOnChange(item: String) {
+    show = !show
+    onClose(item)
+  }
 
   Column(
     modifier = modifier.onGloballyPositioned { coordinates ->
@@ -63,11 +120,7 @@ fun DropDown(
       modifier = Modifier.width(columnWidth).background(White).clip(shape = RoundedCornerShape(8.dp))
         .padding(0.dp, 2.dp).heightIn(max = 270.dp),
       expanded = show,
-      onDismissRequest = {
-        show = !show
-        onClose()
-
-      },
+      onDismissRequest = { show = !show },
       scrollState = hourScrollState,
       offset = DpOffset(0.dp, 0.dp),
       properties = PopupProperties(
@@ -83,7 +136,7 @@ fun DropDown(
           DropdownMenuItem(
             modifier = Modifier.height(50.dp).fillMaxWidth()
               .padding(horizontal = 6.dp).clip(shape = RoundedCornerShape(8.dp)),
-            onClick = { show = false },
+            onClick = { handleOnChange(item) },
             text = {
               Text(
                 item,

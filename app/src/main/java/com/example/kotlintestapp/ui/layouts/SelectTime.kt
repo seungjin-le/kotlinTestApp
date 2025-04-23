@@ -23,6 +23,9 @@ fun SelectTime() {
 
 
   var show by remember { mutableStateOf(false) }
+  var hour by remember { mutableStateOf("") }
+  var minute by remember { mutableStateOf("") }
+
   Column(
     modifier = Modifier.fillMaxSize().padding(vertical = 32.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -54,13 +57,15 @@ fun SelectTime() {
         DropDown(
           onClose = { show = false },
           modifier = Modifier.weight(1f).height(60.dp),
-          items = listOf("123v", "123v", "123v", "123v", "123v", "123v", "123v")
+          items = listOf("123v", "123v", "123v", "123v", "123v", "123v", "123v"),
+          value = hour
         )
         Spacer(modifier = Modifier.width(8.dp))
         DropDown(
           onClose = { show = false },
           modifier = Modifier.weight(1f).height(60.dp),
-          items = listOf("123v", "123v", "123v", "123v", "123v", "123v", "123v")
+          items = listOf("123v", "123v", "123v", "123v", "123v", "123v", "123v"),
+          value = minute
         )
       }
     }
