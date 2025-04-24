@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.example.kotlintestapp.models.TimeModel
 import com.example.kotlintestapp.ui.layouts.SelectTime
 import com.example.kotlintestapp.ui.layouts.mainLayout
 import com.example.kotlintestapp.ui.theme.N30
@@ -24,7 +25,8 @@ fun reservationScreen(onClickHome: () -> Unit) {
   var step by remember { mutableStateOf(0) }
   var normalCount by remember { mutableStateOf(0) }
   var infantCount by remember { mutableStateOf(0) }
-
+  var hour by remember { mutableStateOf(TimeModel(label = "00:00", value = "0")) }
+  var minute by remember { mutableStateOf(TimeModel(label = "00", value = "0")) }
   fun handleOnChangeCount(value: Int, type: String) {
 
     if (type == "n") {
@@ -46,13 +48,27 @@ fun reservationScreen(onClickHome: () -> Unit) {
 
   }
 
+  fun handleOnChangeHour(time: TimeModel) {
+    hour = time
+  }
+
+  fun handleOnChangeMinute(time: TimeModel) {
+    minute = time
+  }
+
+
 
 
   mainLayout() {
 
 
     Column {
-      SelectTime()
+      SelectTime(
+        onChangeHour = { handleOnChangeHour(it) },
+        onChangeMinute = { handleOnChangeMinute(it) },
+        hour = hour,
+        minute = minute
+      )
       Row(
         modifier = Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 24.dp),
       ) {
