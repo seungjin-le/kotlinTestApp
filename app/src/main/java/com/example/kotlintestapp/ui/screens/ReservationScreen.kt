@@ -25,8 +25,8 @@ fun reservationScreen(onClickHome: () -> Unit) {
   var step by remember { mutableStateOf(0) }
   var normalCount by remember { mutableStateOf(0) }
   var infantCount by remember { mutableStateOf(0) }
-  var hour by remember { mutableStateOf(TimeModel(label = "00:00", value = "0")) }
-  var minute by remember { mutableStateOf(TimeModel(label = "00", value = "0")) }
+  var hour by remember { mutableStateOf(TimeModel(label = "", value = "0")) }
+  var minute by remember { mutableStateOf(TimeModel(label = "", value = "0")) }
   fun handleOnChangeCount(value: Int, type: String) {
 
     if (type == "n") {
@@ -50,6 +50,7 @@ fun reservationScreen(onClickHome: () -> Unit) {
 
   fun handleOnChangeHour(time: TimeModel) {
     hour = time
+
   }
 
   fun handleOnChangeMinute(time: TimeModel) {
