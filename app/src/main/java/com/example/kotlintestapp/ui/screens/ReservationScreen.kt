@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.example.kotlintestapp.models.TimeModel
 import com.example.kotlintestapp.ui.layouts.SelectTime
 import com.example.kotlintestapp.ui.layouts.mainLayout
+import com.example.kotlintestapp.ui.layouts.memberCount
 import com.example.kotlintestapp.ui.theme.N30
 import com.example.kotlintestapp.ui.theme.N70
 import com.example.kotlintestapp.ui.theme.Orange
@@ -20,7 +21,7 @@ import com.example.kotlintestapp.ui.theme.TextSizes.n2
 import com.example.kotlintestapp.ui.theme.White
 
 @Composable
-fun reservationScreen(onClickHome: () -> Unit) {
+fun reservationScreen(onClick: (String) -> Unit) {
 
   var step by remember { mutableStateOf(0) }
   var normalCount by remember { mutableStateOf(0) }
@@ -38,12 +39,15 @@ fun reservationScreen(onClickHome: () -> Unit) {
 
 
   fun handleOnClickNext() {
-    step = 1
+    println("step: $step")
+    step++
+
 
   }
 
   fun handleOnClickPrev() {
-    if (step == 0) return onClickHome()
+    println("step: $step")
+    if (step == 0) return onClick("home")
     else step--
 
   }
@@ -64,12 +68,15 @@ fun reservationScreen(onClickHome: () -> Unit) {
 
 
     Column {
-      SelectTime(
+      if (step == 0) SelectTime(
         onChangeHour = { handleOnChangeHour(it) },
         onChangeMinute = { handleOnChangeMinute(it) },
         hour = hour,
         minute = minute
       )
+      if (step == 1) memberCount(normalCount, infantCount, ::handleOnChangeCount)
+
+
       Row(
         modifier = Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 24.dp),
       ) {
@@ -83,7 +90,10 @@ fun reservationScreen(onClickHome: () -> Unit) {
         }
         Spacer(modifier = Modifier.width(8.dp))
         TextButton(
-          onClick = { handleOnClickNext() },
+          onClick = {
+            println("step: $step")
+            handleOnClickNext()
+          },
           modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(color = Orange).weight(1f).fillMaxHeight(),
           shape = RoundedCornerShape(8.dp),
 
