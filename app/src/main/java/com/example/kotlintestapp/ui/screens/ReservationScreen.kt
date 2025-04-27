@@ -39,10 +39,7 @@ fun reservationScreen(onClick: (String) -> Unit) {
 
 
   fun handleOnClickNext() {
-    println("step: $step")
     step++
-
-
   }
 
   fun handleOnClickPrev() {
