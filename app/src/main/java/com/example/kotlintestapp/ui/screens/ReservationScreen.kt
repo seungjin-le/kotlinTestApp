@@ -30,11 +30,8 @@ fun reservationScreen(onClick: (String) -> Unit) {
   var minute by remember { mutableStateOf(TimeModel(label = "", value = "0")) }
   fun handleOnChangeCount(value: Int, type: String) {
 
-    if (type == "n") {
-      normalCount = value
-    } else if (type == "i") {
-      infantCount = value
-    }
+    if (type == "n") normalCount = value
+    else if (type == "i") infantCount = value
   }
 
 
