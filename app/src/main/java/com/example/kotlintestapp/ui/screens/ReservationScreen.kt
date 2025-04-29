@@ -36,7 +36,8 @@ fun reservationScreen(onClick: (String) -> Unit) {
 
 
   fun handleOnClickNext() {
-    step++
+    println("step: $step")
+//    step++
   }
 
   fun handleOnClickPrev() {
@@ -61,7 +62,10 @@ fun reservationScreen(onClick: (String) -> Unit) {
   mainLayout() {
 
 
-    Column {
+    Column(
+      modifier = Modifier.fillMaxSize()
+    ) {
+
       if (step == 0) SelectTime(
         onChangeHour = { handleOnChangeHour(it) },
         onChangeMinute = { handleOnChangeMinute(it) },
@@ -71,9 +75,11 @@ fun reservationScreen(onClick: (String) -> Unit) {
       if (step == 1) memberCount(normalCount, infantCount, ::handleOnChangeCount)
 
 
+
       Row(
         modifier = Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 24.dp),
       ) {
+
         TextButton(
           onClick = { handleOnClickPrev() },
           shape = RoundedCornerShape(8.dp),
@@ -83,16 +89,14 @@ fun reservationScreen(onClick: (String) -> Unit) {
           Text(text = "이전", color = N70, style = n2)
         }
         Spacer(modifier = Modifier.width(8.dp))
+
         TextButton(
-          onClick = {
-            println("step: $step")
-            handleOnClickNext()
-          },
-          modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(color = Orange).weight(1f).fillMaxHeight(),
+          onClick = { handleOnClickNext() },
+          modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(color = Orange).fillMaxHeight().weight(1f),
           shape = RoundedCornerShape(8.dp),
 
           ) {
-          Text(text = "다음", color = White, style = n2)
+          Text(text = "다음xcvzxcv", color = White, style = n2)
         }
       }
       Spacer(modifier = Modifier.height(36.dp))

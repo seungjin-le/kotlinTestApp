@@ -18,7 +18,7 @@ fun appRouter(useJwt: Boolean?) {
   NavHost(
     navController = navController,
 //    startDestination = if (useJwt == true) "home" else "login"
-    startDestination = "home"
+    startDestination = "reservation"
   ) {
     composable("home") {
       homeScreen(
