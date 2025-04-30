@@ -11,9 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.kotlintestapp.models.TimeModel
-import com.example.kotlintestapp.ui.layouts.SelectTime
-import com.example.kotlintestapp.ui.layouts.mainLayout
-import com.example.kotlintestapp.ui.layouts.memberCount
+import com.example.kotlintestapp.ui.layouts.*
 import com.example.kotlintestapp.ui.theme.N30
 import com.example.kotlintestapp.ui.theme.N70
 import com.example.kotlintestapp.ui.theme.Orange
@@ -36,8 +34,8 @@ fun reservationScreen(onClick: (String) -> Unit) {
 
 
   fun handleOnClickNext() {
-    println("step: $step")
-//    step++
+
+    step++
   }
 
   fun handleOnClickPrev() {
@@ -60,20 +58,25 @@ fun reservationScreen(onClick: (String) -> Unit) {
 
 
   mainLayout() {
-
-
     Column(
       modifier = Modifier.fillMaxSize()
     ) {
 
-      if (step == 0) SelectTime(
-        onChangeHour = { handleOnChangeHour(it) },
-        onChangeMinute = { handleOnChangeMinute(it) },
-        hour = hour,
-        minute = minute
-      )
-      if (step == 1) memberCount(normalCount, infantCount, ::handleOnChangeCount)
+      Box(modifier = Modifier.fillMaxSize().weight(1f)) {
+        when (step) {
+          0 -> SelectTime(
+            onChangeHour = { handleOnChangeHour(it) },
+            onChangeMinute = { handleOnChangeMinute(it) },
+            hour = hour,
+            minute = minute
+          )
 
+          1 -> memberCount(normalCount, infantCount, ::handleOnChangeCount)
+          2 -> selectMenu(::handleOnClickPrev, ::handleOnClickNext)
+          3 -> waitingPhone()
+        }
+
+      }
 
 
       Row(
@@ -83,7 +86,7 @@ fun reservationScreen(onClick: (String) -> Unit) {
         TextButton(
           onClick = { handleOnClickPrev() },
           shape = RoundedCornerShape(8.dp),
-          modifier = Modifier.clip(RoundedCornerShape(8.dp)).fillMaxHeight().weight(1f),
+          modifier = Modifier.clip(RoundedCornerShape(8.dp)).fillMaxSize().weight(1f),
           border = BorderStroke(1.dp, N30)
         ) {
           Text(text = "이전", color = N70, style = n2)
@@ -92,11 +95,11 @@ fun reservationScreen(onClick: (String) -> Unit) {
 
         TextButton(
           onClick = { handleOnClickNext() },
-          modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(color = Orange).fillMaxHeight().weight(1f),
+          modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(color = Orange).fillMaxSize().weight(1f),
           shape = RoundedCornerShape(8.dp),
 
           ) {
-          Text(text = "다음xcvzxcv", color = White, style = n2)
+          Text(text = "다음", color = White, style = n2)
         }
       }
       Spacer(modifier = Modifier.height(36.dp))

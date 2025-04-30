@@ -63,7 +63,7 @@ fun SelectTime(
 
 
   Column(
-    modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
+    modifier = Modifier.fillMaxSize().padding(vertical = 32.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.SpaceBetween
   ) {
