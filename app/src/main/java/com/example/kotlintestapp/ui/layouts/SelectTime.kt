@@ -59,6 +59,7 @@ fun SelectTime(
   minute: TimeModel? = null,
   onChangeHour: (TimeModel) -> Unit = {},
   onChangeMinute: (TimeModel) -> Unit = {},
+  onChange: (TimeModel, String) -> Unit = {},
 ) {
 
 

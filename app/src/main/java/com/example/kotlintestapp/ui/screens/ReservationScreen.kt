@@ -54,7 +54,11 @@ fun reservationScreen(onClick: (String) -> Unit) {
     minute = time
   }
 
-
+  fun handleOnChangeTime(time: TimeModel, type: String) = when (type) {
+    "h" -> hour = time
+    "m" -> minute = time
+    else -> {}
+  }
 
 
   mainLayout() {
@@ -65,6 +69,7 @@ fun reservationScreen(onClick: (String) -> Unit) {
       Box(modifier = Modifier.fillMaxSize().weight(1f)) {
         when (step) {
           0 -> SelectTime(
+            onChange = { handleOnChangeTime(it) },
             onChangeHour = { handleOnChangeHour(it) },
             onChangeMinute = { handleOnChangeMinute(it) },
             hour = hour,
