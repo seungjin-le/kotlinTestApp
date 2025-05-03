@@ -57,9 +57,7 @@ val minutes = listOf(
 fun SelectTime(
   hour: TimeModel? = null,
   minute: TimeModel? = null,
-  onChangeHour: (TimeModel) -> Unit = {},
-  onChangeMinute: (TimeModel) -> Unit = {},
-  onChange: (TimeModel, String) -> Unit = {},
+  onChange: (TimeModel, String) -> Unit,
 ) {
 
 
@@ -95,7 +93,7 @@ fun SelectTime(
           modifier = Modifier.weight(1f).height(60.dp),
           items = hours,
           value = hour,
-          onChange = { onChangeHour(it) },
+          onChange = { onChange(it, "h") },
           placeholder = ""
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -104,7 +102,7 @@ fun SelectTime(
           modifier = Modifier.weight(1f).height(60.dp),
           items = minutes,
           value = minute,
-          onChange = { onChangeMinute(it) }
+          onChange = { onChange(it, "m") }
         )
       }
     }

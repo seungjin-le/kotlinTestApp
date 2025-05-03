@@ -69,9 +69,7 @@ fun reservationScreen(onClick: (String) -> Unit) {
       Box(modifier = Modifier.fillMaxSize().weight(1f)) {
         when (step) {
           0 -> SelectTime(
-            onChange = { handleOnChangeTime(it) },
-            onChangeHour = { handleOnChangeHour(it) },
-            onChangeMinute = { handleOnChangeMinute(it) },
+            onChange = { time, type -> handleOnChangeTime(time, type) },
             hour = hour,
             minute = minute
           )
