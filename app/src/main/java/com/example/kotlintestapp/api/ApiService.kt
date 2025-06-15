@@ -12,9 +12,8 @@ import retrofit2.http.*
 interface ApiService {
 
 
-  //
-//  @GET("api/v1/common/image-download/67c00529602bbf2a2325b516/c8e9aeb7-5354-49e2-a804-72e1d4a2ec77.png")
-//  @Headers("responseType: blob")
+  //  @GET("api/v1/common/image-download/67c00529602bbf2a2325b516/c8e9aeb7-5354-49e2-a804-72e1d4a2ec77.png")
+  // @Headers("responseType: blob")
   @GET("api/v1/common/image-download/{filepath}")
   fun downloadImage(@Path("filepath") filepath: String): Call<ResponseBody>
 
